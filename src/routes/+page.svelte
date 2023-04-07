@@ -1,24 +1,28 @@
 <script>
-	import { onMount } from 'svelte';
+  import { onMount } from 'svelte';
 
-	const input = {};
-	const toggle = {};
+  const input = {};
+  const toggle = {};
 
-	const onKeyDown = (e) => {
-		input[e.key.toLowerCase()] = 1;
-		toggle[e.key.toLowerCase()] = !toggle[e.key.toLowerCase()];
-	};
+  const onKeyDown = (e) => {
+    input[e.key.toLowerCase()] = 1;
+    toggle[e.key.toLowerCase()] = !toggle[e.key.toLowerCase()];
+  };
 
-	const onKeyUp = (e) => {
-		input[e.key.toLowerCase()] = 0;
-	};
+  const onKeyUp = (e) => {
+    input[e.key.toLowerCase()] = 0;
+  };
 
-	onMount(() => {});
+  onMount(() => {});
 </script>
 
 <svelte:window on:keydown={onKeyDown} on:keyup={onKeyUp} />
 
-<div>Hello world.</div>
+<main>Hello world.</main>
 
 <style>
+  main {
+    width: min(100vw, 100vh);
+    height: min(100vw, 100vh);
+  }
 </style>
