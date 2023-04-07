@@ -1,9 +1,9 @@
 :root {
-  --background: var(--white);
-  --copy: var(--black);
-  --primary: var(--ufo-green);
-  --secondary: var(--plastic-pink);
-  --tertiary: var(--proton-purple);
+  --background: white;
+  --copy: black;
+  --primary: red;
+  --secondary: blue;
+  --tertiary: green;
 
   --space-xxsm: 4px;
   --space-xsm: 8px;

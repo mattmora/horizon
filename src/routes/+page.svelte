@@ -24,5 +24,6 @@
   main {
     width: min(100vw, 100vh);
     height: min(100vw, 100vh);
+    color: white;
   }
 </style>

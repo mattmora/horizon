@@ -1,5 +1,40 @@
-html {
+:root {
+  --background: var(--white);
+  --copy: var(--black);
+  --primary: var(--ufo-green);
+  --secondary: var(--plastic-pink);
+  --tertiary: var(--proton-purple);
+
+  --space-xxsm: 4px;
+  --space-xsm: 8px;
+  --space-sm: 13px;
+  --space-m: 21px;
+  --space-lg: 34px;
+  --space-xlg: 55px;
+  --space-xxlg: 89px;
+  --space-xxxlg: 144px;
+
+  --size-small: 13px;
+  --size-copy: 16px;
+  --size-h3: 21px;
+  --size-h2: 34px;
+  --size-h1: 55px;
+  --size-title: 89px;
 }
 
-body {
+html,
+body,
+main {
+  width: 100%;
+  font-size: var(--size-copy);
+  color: var(--copy);
+  background: transparent;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }

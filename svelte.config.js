@@ -10,7 +10,7 @@ const config = {
     }),
     paths: {
       // change below to your repo name
-      base: '/template',
+      base: '/horizon',
     },
   },
 };
