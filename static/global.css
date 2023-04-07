@@ -1,9 +1,9 @@
 :root {
-  --background: white;
+  --background: azure;
   --copy: black;
-  --primary: red;
-  --secondary: blue;
-  --tertiary: green;
+  --primary: black;
+  --secondary: orangered;
+  --tertiary: darkviolet;
 
   --space-xxsm: 4px;
   --space-xsm: 8px;
@@ -23,12 +23,12 @@
 }
 
 html,
-body,
-main {
+body {
   width: 100%;
   font-size: var(--size-copy);
   color: var(--copy);
   background: transparent;
+  font-family: 'Atkinson Hyperlegible';
 }
 
 *,
@@ -37,4 +37,14 @@ main {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
 }

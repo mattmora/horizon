@@ -23,12 +23,13 @@
 }
 
 html,
-body,
-main {
+body {
   width: 100%;
   font-size: var(--size-copy);
   color: var(--copy);
   background: transparent;
+  min-height: 100vh;
+  font-family: 'Alegreya Sans', sans-serif;
 }
 
 *,

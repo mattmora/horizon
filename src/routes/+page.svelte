@@ -1,5 +1,7 @@
 <script>
   import { onMount } from 'svelte';
+  import Earth from '../components/Earth.svelte';
+  import Horizon from '../components/Horizon.svelte';
 
   const input = {};
   const toggle = {};
@@ -13,17 +15,38 @@
     input[e.key.toLowerCase()] = 0;
   };
 
-  onMount(() => {});
+  onMount(() => {
+    // requestAnimationFrame(update());
+  });
+
+  const update = (timestamp) => {
+    requestAnimationFrame(update);
+  };
 </script>
 
 <svelte:window on:keydown={onKeyDown} on:keyup={onKeyUp} />
 
-<main>Hello world.</main>
+<main>
+  <div class="column" style={toggle.x ? 'width:100%;' : ''}>
+    <Earth />
+  </div>
+  <div class="column" style={`filter: invert(1); ${toggle.x ? 'width:0;' : ''}`}>
+    <Horizon />
+  </div>
+</main>
 
 <style>
   main {
-    width: min(100vw, 100vh);
-    height: min(100vw, 100vh);
-    color: white;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+  }
+
+  .column {
+    justify-content: center;
+    width: 50%;
+    height: 100vh;
+    background-color: var(--background);
+    transition: width 3s;
   }
 </style>
