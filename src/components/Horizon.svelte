@@ -110,7 +110,7 @@
   }
 
   div.messages > div {
-    /* padding: var(--space-xsm); */
+    padding: var(--space-xxsm);
     color: var(--secondary);
   }
 </style>

@@ -15,6 +15,7 @@ const initial = {
     [Engines.COMBUSTION]: {
       count: ZERO,
       mass: 2000,
+      // unitEnergy: new BigNumber(100000000), // 100MJ
       thrust: new BigNumber('5e8'),
       consumption: 50,
       throttle: 0,
@@ -42,6 +43,8 @@ const createRocket = () => {
         const throttle = e.throttle * 0.01;
         mass = mass.plus(e.count.times(e.mass));
         thrust = thrust.plus(e.count.times(e.thrust).times(throttle));
+        // thrust = thrust.plus(e.count.times(e.unitEnergy.div(CSQ)).times(throttle));
+
         consumption = consumption.plus(e.count.times(e.consumption).times(throttle));
       });
       return { distance, velocity, fuel, mass, thrust, consumption };
