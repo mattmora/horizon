@@ -4,6 +4,7 @@
   --primary: black;
   --secondary: orangered;
   --tertiary: darkviolet;
+  --quaternary: darkturquoise;
 
   --space-xxsm: 4px;
   --space-xsm: 8px;
@@ -42,9 +43,74 @@ body {
 .row {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 
 .column {
   display: flex;
   flex-direction: column;
+}
+
+.gap-small {
+  gap: var(--space-xxsm);
+}
+
+.gap-medium {
+  gap: var(--space-sm);
+}
+
+.gap-large {
+  gap: var(--space-m);
+}
+
+span.num {
+  font-variant-numeric: tabular-nums;
+  color: var(--tertiary);
+}
+
+button {
+  color: var(--secondary);
+  padding: 4px;
+  cursor: pointer;
+  font-family: 'Atkinson Hyperlegible';
+}
+
+button:hover,
+:focus {
+  color: var(--quaternary);
+}
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 20px;
+  background: #d3d3d3;
+  overflow: hidden;
+  opacity: 0.5;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
+}
+
+.slider:hover:not(:disabled),
+:focus {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--secondary);
+  box-shadow: -2000px 0 0 2000px var(--quaternary); /* 2 */
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: var(--secondary);
+  box-shadow: -2000px 0 0 2000px var(--quaternary); /* 2 */
+  cursor: pointer;
 }

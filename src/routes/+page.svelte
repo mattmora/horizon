@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import Earth from '../components/Earth.svelte';
   import Horizon from '../components/Horizon.svelte';
+  import { start } from '../lib/physics/physics';
 
   const input = {};
   const toggle = {};
@@ -16,12 +17,8 @@
   };
 
   onMount(() => {
-    // requestAnimationFrame(update());
+    start();
   });
-
-  const update = (timestamp) => {
-    requestAnimationFrame(update);
-  };
 </script>
 
 <svelte:window on:keydown={onKeyDown} on:keyup={onKeyUp} />
