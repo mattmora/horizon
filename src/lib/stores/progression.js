@@ -1,11 +1,13 @@
 // track and save game state, unlocks, etc.
 import { get, writable } from 'svelte/store';
 import { Engines } from './rocket';
+import { TaskIds } from './research';
 
 const initial = {
   departed: false,
   unlocks: {
     [Engines.COMBUSTION]: true,
+    [TaskIds.FUEL_COLLECTION]: true,
   },
 };
 

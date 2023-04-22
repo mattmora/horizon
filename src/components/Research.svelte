@@ -1,4 +1,5 @@
 <script>
+  import { ONE } from '../lib/physics/constants';
   import { multitaskFactor } from '../lib/physics/physics';
   import { research } from '../lib/stores/research';
 </script>
@@ -13,7 +14,10 @@
         <button on:click={() => research.setActive(taskId)} disabled={$research.active[taskId]}
           ><p>
             <b>{task.title}:</b>
-            {task.description} (<span class="num">{task.progress.div(task.time).times(100).toFixed(2)}%</span>)
+            {task.description}
+            <!--(<span class="num">{task.time.toFixed(0)}s</span>) -->(<span class="num"
+              >{task.progress.div(task.time).times(100).toFixed(2)}%</span
+            >)
           </p>
         </button>
       {/each}
@@ -28,7 +32,7 @@
         <button on:click={() => research.setAvailable(taskId)}
           ><p>
             <b>{task.title}</b>
-            (<span class="num">{task.time.div(100).times($multitaskFactor).toFixed(2)}%</span> per second)
+            (<span class="num">{ONE.times(100).div(task.time).times($multitaskFactor).toFixed(2)}%</span> per second)
           </p>
         </button>
       {/each}

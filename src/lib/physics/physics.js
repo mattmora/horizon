@@ -35,26 +35,28 @@ const update = (timestamp) => {
   requestAnimationFrame(update);
 };
 
-const process = (delta, { distance, velocity, mass, fuel, thrust, consumption }) => {
-  const newDistance = distance.plus(velocity.times(delta));
-
+const process = (delta, { distance, velocity, mass, fuel, thrust, consumption, capture }) => {
   lorentz.set(ONE.div(ONE.minus(velocity.pow(2).div(CSQ)).sqrt()));
-  const mc2 = mass.times(CSQ);
-  const currentK = get(lorentz).minus(1).times(mc2);
+  const lorentzFactor = get(lorentz);
+  const traveled = velocity.times(delta).times(lorentzFactor);
+  const newDistance = distance.plus(traveled);
 
-  const fuelConsumed = BigNumber.min(consumption.times(delta), fuel);
+  const fuelCaptured = capture.area.times(capture.rate).times(traveled);
+  const fuelConsumed = BigNumber.min(consumption.times(delta), fuel.plus(fuelCaptured));
   const fueledDelta = consumption.isGreaterThan(0) ? fuelConsumed.div(consumption) : ZERO;
 
+  const currentK = lorentzFactor.minus(1).times(mass).times(CSQ);
+
   const newK = currentK.plus(thrust.times(fueledDelta));
-  const newVelocity = ONE.minus(ONE.div(newK.div(mc2).plus(1)).pow(2))
+  const newVelocity = ONE.minus(ONE.div(newK.div(mass.plus(fuelCaptured).times(CSQ)).plus(1)).pow(2))
     .sqrt()
     .times(C);
 
-  rocket.update({ distance: newDistance, velocity: newVelocity, fuel: fuel.minus(fuelConsumed) });
+  rocket.update({ distance: newDistance, velocity: newVelocity, fuel: fuel.plus(fuelCaptured).minus(fuelConsumed) });
 
   horizonTime.set(get(horizonTime).plus(delta.div(TIME_UNIT)));
 
-  const earthDelta = get(lorentz).times(delta);
+  const earthDelta = lorentzFactor.times(delta);
   const active = get(research).active;
   const taskIds = Object.keys(active);
   multitaskFactor.set(1 / Math.sqrt(taskIds.length));

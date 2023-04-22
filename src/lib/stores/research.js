@@ -23,39 +23,39 @@ const Tasks = {
     },
   },
   [TaskIds.COMBUSTION_MASS]: {
-    title: 'Combustion Mass',
+    title: 'Combustion Engine Mass',
     description: 'Reduce mass of combustion engines.',
     progress: ZERO,
-    time: BigNumber(100),
+    time: BigNumber(20),
     complete: function () {
       rocket.upgradeEngines(Engines.COMBUSTION, {
         mass: initialRocket.engines[Engines.COMBUSTION].mass * Math.pow(0.8, this.iteration),
       });
-      createTask(TaskIds.COMBUSTION_MASS, this.iteration + 1);
+      research.createTask(TaskIds.COMBUSTION_MASS, this.iteration + 1);
     },
   },
   [TaskIds.COMBUSTION_CONSUMPTION]: {
-    title: 'Combustion Consumption',
+    title: 'Combustion Engine Consumption',
     description: 'Increase fuel consumption rate of combustion engines.',
     progress: ZERO,
-    time: BigNumber(100),
+    time: BigNumber(20),
     complete: function () {
       rocket.upgradeEngines(Engines.COMBUSTION, {
         consumption: initialRocket.engines[Engines.COMBUSTION].consumption.plus(this.iteration * 30),
       });
-      createTask(TaskIds.COMBUSTION_CONSUMPTION, this.iteration + 1);
+      research.createTask(TaskIds.COMBUSTION_CONSUMPTION, this.iteration + 1);
     },
   },
   [TaskIds.COMBUSTION_EFFICIENCY]: {
-    title: 'Combustion Efficiency',
+    title: 'Combustion Engine Efficiency',
     description: 'Improve combustion engine efficiency as throttle increases.',
     progress: ZERO,
-    time: BigNumber(100),
+    time: BigNumber(20),
     complete: function () {
       rocket.upgradeEngines(Engines.COMBUSTION, {
-        loss: initialRocket.engines[Engines.COMBUSTION].loss.times(Math.pow(0.8, this.iteration)),
+        loss: initialRocket.engines[Engines.COMBUSTION].loss * Math.pow(0.8, this.iteration),
       });
-      createTask(TaskIds.COMBUSTION_EFFICIENCY, this.iteration + 1);
+      research.createTask(TaskIds.COMBUSTION_EFFICIENCY, this.iteration + 1);
     },
   },
 };

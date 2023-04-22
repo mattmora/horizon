@@ -100,7 +100,7 @@ button:hover:not(:disabled),
 }
 
 button:disabled:not(.no-interact) {
-  opacity: 1;
+  filter: saturate(0.3);
   cursor: default;
 }
 

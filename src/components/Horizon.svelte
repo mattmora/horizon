@@ -6,6 +6,7 @@
   import { ZERO } from '../lib/physics/constants';
   import { lorentz, horizonTime } from '../lib/physics/physics';
   import { slide } from 'svelte/transition';
+  import { TaskIds } from '../lib/stores/research';
 
   let engines = [];
   let mass = ZERO;
@@ -24,6 +25,18 @@
   const recycle = (key) => {
     if (!rocket.tryRecycle(key)) {
       postMessage(`No ${key} engines to recycle.`);
+    }
+  };
+
+  const expand = () => {
+    if (!rocket.tryExpand()) {
+      postMessage('Not enough material.');
+    }
+  };
+
+  const reduce = () => {
+    if (!rocket.tryReduce()) {
+      postMessage(`Fuel capture system is fully reduced.`);
     }
   };
 
@@ -55,24 +68,47 @@
 
     <div class="column gap-small">
       <p>Time: <span class="num">{$horizonTime.toFixed(2)}</span>s</p>
-      <p>Distance: <span class="num">{$rocket.distance.toFixed(2)}</span>m</p>
+      <p>Traveled: <span class="num">{$rocket.distance.toFixed(2)}</span>m</p>
       <p>Velocity: <span class="num">{$rocket.velocity.toFixed(2)}</span>m/s</p>
       <p>Lorentz Factor: <span class="num">{$lorentz.toPrecision(20)}</span>m/s</p>
     </div>
     <hr />
     <div class="column gap-small">
-      <!-- <p>Total Mass: <span class="num">{mass.toFixed(2)}</span>kg</p> -->
-      <p>Free Material: <span class="num">{$rocket.material}</span>kg</p>
+      <p>Total Mass: <span class="num">{mass.toFixed(2)}</span>kg</p>
+      <p>Free Material: <span class="num">{$rocket.material.toFixed(2)}</span>kg</p>
       <p>Fuel: <span class="num">{$rocket.fuel.toFixed(2)}</span>kg</p>
     </div>
-    {#each engines as key}
+    {#if $progression.unlocks[TaskIds.FUEL_COLLECTION]}
       <hr />
-      {@const engine = $rocket.engines[key]}
+      {@const { mass, area, rate } = $rocket.capture}
       <div class="column gap-small">
+        <h3>Fuel Capture Net: <span class="num">{area}</span><small>m<sup>2</sup></small></h3>
+        <div class="row gap-small">
+          <button on:click={() => expand()}
+            >Expand (<span class="num">+{area.sqrt().plus(1).pow(2).minus(area).times(mass)}</span>)</button
+          >
+          <button on:click={() => reduce()}
+            >Reduce (<span class="num"
+              >-{area.isGreaterThan(0) ? area.minus(area.sqrt().minus(1).pow(2)).times(mass) : 0}</span
+            >)</button
+          >
+        </div>
+        <p>
+          Mass: <span class="num">{area.times(mass)}</span>kg (<span class="num">{mass}</span>PU)
+        </p>
+        <p>
+          Capture Rate: <span class="num">{rate.times(area).toExponential(2)}</span>kg/m of travel
+        </p>
+      </div>
+    {/if}
+    {#each engines as key}
+      {@const engine = $rocket.engines[key]}
+      <hr />
+      <div class="column gap-small">
+        <h3>{Case.capital(key)} Engines: <span class="num">{engine.count}</span></h3>
         <div class="row gap-small">
           <button on:click={() => build(key)}>Build</button>
           <button on:click={() => recycle(key)}>Recycle</button>
-          <h3>{Case.capital(key)} Engines: <span class="num">{engine.count}</span></h3>
         </div>
         <p>
           Mass: <span class="num">{engine.count.times(engine.mass)}</span>kg (<span class="num">{engine.mass}</span>PU)
