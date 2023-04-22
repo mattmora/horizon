@@ -23,6 +23,7 @@
   "type": "module",
   "dependencies": {
     "bignumber.js": "^9.1.1",
-    "case": "^1.6.3"
+    "case": "^1.6.3",
+    "just-clone": "^6.2.0"
   }
 }

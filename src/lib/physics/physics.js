@@ -1,7 +1,9 @@
 import { rocket } from '../stores/rocket';
 import BigNumber from 'bignumber.js';
-import { C, CSQ, DECIMAL_PLACES, ONE, ZERO } from './constants';
+import { C, CSQ, HOUR, ONE, TIME_UNIT, ZERO } from './constants';
 import { get, writable } from 'svelte/store';
+import { progression } from '../stores/progression';
+import { TaskIds, research } from '../stores/research';
 
 // process physics, does not store state
 let previousTimestamp;
@@ -14,12 +16,26 @@ export const start = () => {
 export const lorentz = writable(ONE);
 export const horizonTime = writable(ZERO);
 export const earthTime = writable(ZERO);
+export const multitaskFactor = writable(1);
 
 const update = (timestamp) => {
-  const delta = (timestamp - previousTimestamp) * 0.001;
+  const delta = TIME_UNIT.times((timestamp - previousTimestamp) * 0.001);
 
-  const { distance, velocity, mass, fuel, thrust, consumption } = rocket.getInfo();
+  const info = rocket.getInfo();
+  if (info.thrust.isGreaterThan(0) && !get(progression).departed) {
+    progression.update({ departed: true });
+    research.createTask(TaskIds.FUEL_COLLECTION);
+    research.createTask(TaskIds.COMBUSTION_MASS);
+    research.createTask(TaskIds.COMBUSTION_CONSUMPTION);
+    research.createTask(TaskIds.COMBUSTION_EFFICIENCY);
+  }
+  if (get(progression).departed) process(delta, info);
 
+  previousTimestamp = timestamp;
+  requestAnimationFrame(update);
+};
+
+const process = (delta, { distance, velocity, mass, fuel, thrust, consumption }) => {
   const newDistance = distance.plus(velocity.times(delta));
 
   lorentz.set(ONE.div(ONE.minus(velocity.pow(2).div(CSQ)).sqrt()));
@@ -36,9 +52,20 @@ const update = (timestamp) => {
 
   rocket.update({ distance: newDistance, velocity: newVelocity, fuel: fuel.minus(fuelConsumed) });
 
-  horizonTime.set(get(horizonTime).plus(delta));
-  earthTime.set(get(earthTime).plus(get(lorentz).times(delta)));
+  horizonTime.set(get(horizonTime).plus(delta.div(TIME_UNIT)));
 
-  previousTimestamp = timestamp;
-  requestAnimationFrame(update);
+  const earthDelta = get(lorentz).times(delta);
+  const active = get(research).active;
+  const taskIds = Object.keys(active);
+  multitaskFactor.set(1 / Math.sqrt(taskIds.length));
+  taskIds.forEach((taskId) => {
+    const task = active[taskId];
+    task.progress = task.progress.plus(earthDelta.times(get(multitaskFactor)));
+    if (task.progress.isGreaterThan(task.time)) {
+      task.complete();
+      research.setCompleted(taskId);
+    }
+  });
+  research.update((data) => data);
+  earthTime.set(get(earthTime).plus(earthDelta.div(TIME_UNIT)));
 };

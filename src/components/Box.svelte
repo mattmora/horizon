@@ -7,7 +7,7 @@
 </script>
 
 <div class="box-container" {style}>
-  <h2 class="title">{title}</h2>
+  <h1 class="title">{title}</h1>
   <div class="box" style={boxStyle}>
     <slot />
   </div>
@@ -28,9 +28,11 @@
   }
 
   .box {
+    position: relative;
     height: 90%;
     padding: var(--space-sm);
     /* aspect-ratio: 1 / 1; */
-    overflow: auto;
+    overflow-y: scroll;
+    overflow-x: auto;
   }
 </style>

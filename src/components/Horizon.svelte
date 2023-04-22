@@ -11,13 +11,19 @@
   let mass = ZERO;
   $: {
     $rocket;
-    engines = Object.values(Engines).filter((key) => $progression.unlocks.engines[key]);
+    engines = Object.values(Engines).filter((key) => $progression.unlocks[key]);
     mass = rocket.getInfo().mass;
   }
 
   const build = (key) => {
     if (!rocket.tryBuild(key)) {
       postMessage('Not enough material.');
+    }
+  };
+
+  const recycle = (key) => {
+    if (!rocket.tryRecycle(key)) {
+      postMessage(`No ${key} engines to recycle.`);
     }
   };
 
@@ -37,13 +43,12 @@
 </script>
 
 <Box title="Horizon">
+  <!-- <h6>FTL Communication Module</h6> -->
   <div class="column gap-medium">
     <div class="messages-container">
       <div class="messages">
         {#each messages as message (message.timestamp)}
-          <div transition:slide={{ duration: 300 }}>
-            <p>{message.timestamp} : {message.text}</p>
-          </div>
+          <p transition:slide={{ duration: 300 }}>{`${message.timestamp} : ${message.text}`}</p>
         {/each}
       </div>
     </div>
@@ -56,9 +61,8 @@
     </div>
     <hr />
     <div class="column gap-small">
-      <h3>Payload</h3>
-      <p>Total Mass: <span class="num">{mass.toFixed(2)}</span>kg</p>
-      <p>Material: <span class="num">{$rocket.material.toFixed(2)}</span>kg</p>
+      <!-- <p>Total Mass: <span class="num">{mass.toFixed(2)}</span>kg</p> -->
+      <p>Free Material: <span class="num">{$rocket.material}</span>kg</p>
       <p>Fuel: <span class="num">{$rocket.fuel.toFixed(2)}</span>kg</p>
     </div>
     {#each engines as key}
@@ -67,14 +71,34 @@
       <div class="column gap-small">
         <div class="row gap-small">
           <button on:click={() => build(key)}>Build</button>
+          <button on:click={() => recycle(key)}>Recycle</button>
           <h3>{Case.capital(key)} Engines: <span class="num">{engine.count}</span></h3>
         </div>
-        <div class="row gap-medium">
-          <p>Unit Mass: <span class="num">{engine.mass}</span>kg</p>
-          <p>Unit Fuel Consumption: <span class="num">{engine.consumption}</span>kg/s</p>
-        </div>
+        <p>
+          Mass: <span class="num">{engine.count.times(engine.mass)}</span>kg (<span class="num">{engine.mass}</span>PU)
+        </p>
+        <p>
+          Fuel Consumption: <span class="num">{engine.count.times(engine.consumption)}</span>kg/s (<span class="num"
+            >{engine.consumption}</span
+          >PU)
+        </p>
+        <p>
+          Output: <span class="num">{engine.count.times(engine.output)}</span>J/kg (<span class="num"
+            >{engine.output}</span
+          >PU)
+        </p>
         {#if engine.count > 0}
-          <label for="{key}-throttle">Engine Array Throttle: <span class="num">{engine.throttle}%</span></label>
+          {@const efficiency = 1 - Math.sqrt(engine.throttle * 0.01) * engine.loss}
+          <div class="row" style="justify-content: space-between;">
+            <label for="{key}-throttle">
+              <span class:emphasis-alt={!$progression.departed}>Engine Array Throttle:</span>
+              <span class="num">{engine.throttle}%</span>
+            </label>
+            <p>
+              <span class="num">{(efficiency * 100).toFixed(1)}%</span> Propulsion Efficiency
+            </p>
+          </div>
+
           <input
             type="range"
             min="0"
@@ -83,6 +107,9 @@
             id="{key}-throttle"
             bind:value={$rocket.engines[key].throttle}
           />
+          <p>
+            Thrust: <span class="num">{engine.thrust.times($rocket.fuel > 0 ? 1 : 0).toFixed(0)}</span>N
+          </p>
         {/if}
       </div>
     {/each}
@@ -92,25 +119,38 @@
 <style>
   div.messages-container {
     position: sticky;
-    top: 0px;
+    top: calc(var(--space-sm) * -1 - 1px);
     display: flex;
     flex-direction: column-reverse;
     overflow: auto;
     width: 100%;
-    height: 100px;
+    height: 80px;
     border: 1px solid var(--primary);
+    background: var(--background);
   }
 
   div.messages {
     /* position: absolute; */
     display: flex;
     flex-direction: column;
-    background: var(--background);
-    opacity: 0.9;
   }
 
-  div.messages > div {
+  div.messages > p {
     padding: var(--space-xxsm);
     color: var(--secondary);
+  }
+
+  h6 {
+    position: absolute;
+    top: 7px;
+    left: 16px;
+    z-index: 10;
+    padding: 0 2px;
+    height: 14px;
+    background: var(--background);
+    width: min(calc(100% - 32px), 138px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 </style>

@@ -3,10 +3,9 @@ import { get, writable } from 'svelte/store';
 import { Engines } from './rocket';
 
 const initial = {
+  departed: false,
   unlocks: {
-    engines: {
-      [Engines.COMBUSTION]: true,
-    },
+    [Engines.COMBUSTION]: true,
   },
 };
 
@@ -17,7 +16,8 @@ const createProgression = () => {
   return {
     subscribe,
     set,
-    update,
+    update: (updated) => update((current) => ({ ...current, ...updated })),
+    unlock: (unlock) => update((current) => ({ ...current, unlocks: { ...current.unlocks, ...unlock } })),
     reset: () => set(initial),
   };
 };
