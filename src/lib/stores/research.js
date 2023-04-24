@@ -10,6 +10,14 @@ export const TaskIds = {
   COMBUSTION_MASS: 'combustion-mass',
   COMBUSTION_CONSUMPTION: 'combustion-consumption',
   COMBUSTION_EFFICIENCY: 'combustion-efficiency',
+  FUSION_ENGINE: 'fusion-engine',
+  FUSION_MASS: 'fusion-mass',
+  FUSION_CONSUMPTION: 'fusion-consumption',
+  FUSION_EFFICIENCY: 'fusion-efficiency',
+  ANTIMATTER_ENGINE: 'antimatter-engine',
+  ANTIMATTER_MASS: 'antimatter-mass',
+  ANTIMATTER_CONSUMPTION: 'antimatter-consumption',
+  ANTIMATTER_EFFICIENCY: 'antimatter-efficiency',
 };
 
 const Tasks = {
@@ -29,7 +37,7 @@ const Tasks = {
     time: BigNumber(20),
     complete: function () {
       rocket.upgradeEngines(Engines.COMBUSTION, {
-        mass: initialRocket.engines[Engines.COMBUSTION].mass * Math.pow(0.8, this.iteration),
+        mass: initialRocket.engines[Engines.COMBUSTION].mass * Math.pow(0.85, this.iteration),
       });
       research.createTask(TaskIds.COMBUSTION_MASS, this.iteration + 1);
     },
@@ -53,7 +61,7 @@ const Tasks = {
     time: BigNumber(20),
     complete: function () {
       rocket.upgradeEngines(Engines.COMBUSTION, {
-        loss: initialRocket.engines[Engines.COMBUSTION].loss * Math.pow(0.8, this.iteration),
+        loss: initialRocket.engines[Engines.COMBUSTION].loss * Math.pow(0.9, this.iteration),
       });
       research.createTask(TaskIds.COMBUSTION_EFFICIENCY, this.iteration + 1);
     },
@@ -80,6 +88,7 @@ const createResearch = () => {
     set,
     update: (updated) => update((current) => ({ ...current, ...updated })),
     reset: () => set(initial),
+    // TODO: don't separate iterations (specifically in completed tasks)?
     createTask: (taskBaseId, iteration) => {
       const { available } = get(store);
       // build task
