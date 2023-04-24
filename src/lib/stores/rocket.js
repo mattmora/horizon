@@ -13,17 +13,17 @@ export const initialRocket = {
   material: BigNumber(1000000),
   fuel: BigNumber(1000000),
   capture: {
-    mass: ONE,
+    mass: BigNumber(0.3),
     area: ZERO,
     // rate: BigNumber('1.4e-22'),
     rate: BigNumber('1.4e-12'),
   },
   engines: {
     [Engines.COMBUSTION]: {
-      count: BigNumber(5),
+      count: BigNumber(10),
       mass: 500,
-      output: BigNumber(140000000),
-      consumption: BigNumber(10),
+      output: BigNumber(145000000),
+      consumption: BigNumber(30),
       loss: 0.75,
       throttle: 0,
       thrust: ZERO,
@@ -59,21 +59,23 @@ const createRocket = () => {
       });
       return { distance, velocity, fuel, mass, thrust, consumption, capture };
     },
-    tryBuild: (key) => {
+    tryBuild: (key, tryCount = 1) => {
       const { material, engines } = get(store);
-      if (material.isGreaterThanOrEqualTo(engines[key].mass)) {
-        engines[key].count = engines[key].count.plus(1);
-        get(store).material = material.minus(engines[key].mass);
+      const count = BigNumber.min(material.dividedToIntegerBy(engines[key].mass), tryCount);
+      if (material.isGreaterThanOrEqualTo(engines[key].mass * count)) {
+        engines[key].count = engines[key].count.plus(count);
+        get(store).material = material.minus(engines[key].mass * count);
         update((data) => data);
         return true;
       }
       return false;
     },
-    tryRecycle: (key) => {
+    tryRecycle: (key, tryCount = 1) => {
       const { material, engines } = get(store);
       if (engines[key].count.isGreaterThan(0)) {
-        engines[key].count = engines[key].count.minus(1);
-        get(store).material = material.plus(engines[key].mass);
+        const count = BigNumber.min(engines[key].count, tryCount);
+        engines[key].count = engines[key].count.minus(count);
+        get(store).material = material.plus(engines[key].mass * count);
         update((data) => data);
         return true;
       }
@@ -104,7 +106,16 @@ const createRocket = () => {
       }
       return false;
     },
-    upgradeEngines: (key) => {},
+    upgradeEngines: (key, upgrade) => {
+      const { engines } = get(store);
+      const count = engines[key].count;
+      tryRecycle(key, count);
+      engines[key] = {
+        ...engines[key],
+        ...upgrade,
+      };
+      tryBuild(key, count);
+    },
   };
 };
 
