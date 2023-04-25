@@ -1,6 +1,6 @@
 import { get, writable } from 'svelte/store';
 import BigNumber from 'bignumber.js';
-import { DECIMAL_PLACES, ONE, ZERO } from '../physics/constants';
+import { CSQ, DECIMAL_PLACES, ONE, ZERO } from '../physics/constants';
 import clone from 'just-clone';
 
 export const Engines = {
@@ -22,7 +22,25 @@ export const initialRocket = {
     [Engines.COMBUSTION]: {
       count: BigNumber(10),
       mass: 500,
-      output: BigNumber(145000000000),
+      output: BigNumber('140,000,000'),
+      consumption: BigNumber(30),
+      loss: 0.75,
+      throttle: 0,
+      thrust: ZERO,
+    },
+    [Engines.FUSION]: {
+      count: BigNumber(0),
+      mass: 500,
+      output: BigNumber('640,000,000,000,000'),
+      consumption: BigNumber(30),
+      loss: 0.75,
+      throttle: 0,
+      thrust: ZERO,
+    },
+    [Engines.ANTIMATTER]: {
+      count: BigNumber(0),
+      mass: 500,
+      output: CSQ,
       consumption: BigNumber(30),
       loss: 0.75,
       throttle: 0,
@@ -47,7 +65,7 @@ const createRocket = () => {
       return true;
     }
     return false;
-  }
+  };
 
   const tryRecycle = (key, tryCount = 1) => {
     const { material, engines } = get(store);
@@ -59,7 +77,7 @@ const createRocket = () => {
       return true;
     }
     return false;
-  }
+  };
 
   const tryExpand = () => {
     const { material, capture } = get(store);
@@ -72,7 +90,7 @@ const createRocket = () => {
       return true;
     }
     return false;
-  }
+  };
 
   const tryReduce = () => {
     const { material, capture } = get(store);
@@ -86,7 +104,7 @@ const createRocket = () => {
       return true;
     }
     return false;
-  }
+  };
 
   return {
     subscribe,

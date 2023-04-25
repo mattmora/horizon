@@ -30,6 +30,7 @@ const Tasks = {
       progression.unlock({ [TaskIds.FUEL_COLLECTION]: true });
     },
   },
+  // COMBUSTION
   [TaskIds.COMBUSTION_MASS]: {
     title: 'Combustion Engine Mass',
     description: 'Reduce mass of combustion engines.',
@@ -64,6 +65,26 @@ const Tasks = {
         loss: initialRocket.engines[Engines.COMBUSTION].loss * Math.pow(0.9, this.iteration),
       });
       research.createTask(TaskIds.COMBUSTION_EFFICIENCY, this.iteration + 1);
+    },
+  },
+  // FUSION
+  [TaskIds.FUSION_ENGINE]: {
+    title: 'Fusion Engine',
+    description: '',
+    progress: ZERO,
+    time: BigNumber(100),
+    complete: function () {
+      progression.unlock({ [TaskIds.FUEL_COLLECTION]: true });
+    },
+  },
+  // ANTIMATTER
+  [TaskIds.ANTIMATTER_ENGINE]: {
+    title: 'Antimatter Engine',
+    description: '',
+    progress: ZERO,
+    time: BigNumber(100),
+    complete: function () {
+      progression.unlock({ [TaskIds.FUEL_COLLECTION]: true });
     },
   },
 };

@@ -62,4 +62,8 @@
     height: 100px;
     border-left: 1px solid var(--primary);
   }
+
+  b {
+    font-style: italic;
+  }
 </style>
