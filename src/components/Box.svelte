@@ -18,8 +18,8 @@
     display: flex;
     flex-direction: column;
     width: max(min(100%, 50vw), 0vw);
-    height: 90%;
-    padding: 0 max(min(10%, 5vw), 0vw);
+    height: 94%;
+    padding: 0 max(min(8%, 4vw), 0vw);
     margin: auto;
   }
 

@@ -6,9 +6,11 @@ import { ZERO } from '../physics/constants';
 import clone from 'just-clone';
 
 export const TaskIds = {
-  FUEL_CAPTURE: 'fuel-capture',
-  FUEL_CAPTURE_MASS: 'fuel-capture-mass',
   RESEARCH_AUTOMATION: 'research-automation',
+  FUEL_MATERIAL_CONVERSION: 'fuel-material-conversion',
+  FUEL_CAPTURE: 'fuel-capture',
+  FUEL_CAPTURE_AUTOMATION: 'fuel-capture-automation',
+  FUEL_CAPTURE_MASS: 'fuel-capture-mass',
   COMBUSTION_AUTOMATION: 'combustion-automation',
   COMBUSTION_MASS: 'combustion-mass',
   COMBUSTION_CONSUMPTION: 'combustion-consumption',
@@ -128,7 +130,7 @@ const createResearch = () => {
   const { subscribe, set, update } = store;
 
   const createTask = (taskBaseId, iteration) => {
-    const { available } = get(store);
+    const { available, active } = get(store);
     // build task
     const task = clone(Tasks[taskBaseId]);
     task.iteration = iteration ?? 1;
@@ -137,6 +139,7 @@ const createResearch = () => {
     // make task available
     //   const taskId = `${taskBaseId}-${task.iteration}`;
     const taskId = taskBaseId;
+    if (iteration !== undefined && true /**research auto */) active[taskId] = task;
     available[taskId] = task;
     update((data) => data);
   };
