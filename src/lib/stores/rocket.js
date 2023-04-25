@@ -58,7 +58,8 @@ const createRocket = () => {
 
   const tryBuild = (key, tryCount = 1) => {
     const { material, engines } = get(store);
-    const count = BigNumber.min(material.dividedToIntegerBy(engines[key].mass), tryCount);
+    const possible = BigNumber.max(1, material.dividedToIntegerBy(engines[key].mass));
+    const count = BigNumber.min(possible, tryCount);
     if (material.isGreaterThanOrEqualTo(engines[key].mass * count)) {
       engines[key].count = engines[key].count.plus(count);
       get(store).material = material.minus(engines[key].mass * count);
