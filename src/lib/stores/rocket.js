@@ -16,8 +16,8 @@ export const initialRocket = {
     step: 2,
     mass: BigNumber(0.3),
     area: ZERO,
-    rate: BigNumber('1.4e-22'),
-    // rate: BigNumber('1.4e-12'),
+    // rate: BigNumber('1.4e-22'),
+    rate: BigNumber('1.4e-17'),
   },
   engines: {
     [Engines.COMBUSTION]: {
