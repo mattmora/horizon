@@ -10,7 +10,7 @@
     hope to provide you the means to collect more.
   </p>
   <p>
-    We will immediately begin research into such technologies to maintain and accelerate your expedition and we will
+    We will immediately begin research into such technologies to maintain and accelerate your journey and we will
     provide you with instructions to build them via our recently developed faster-than-light communication.
   </p>
   <!-- <p style="color:var(--primary);">Godspeed on your journey to end.</p> -->

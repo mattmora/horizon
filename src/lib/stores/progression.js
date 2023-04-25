@@ -7,7 +7,9 @@ const initial = {
   departed: false,
   unlocks: {
     [Engines.COMBUSTION]: true,
-    [TaskIds.FUEL_COLLECTION]: false,
+    [Engines.FUSION]: true,
+    [Engines.ANTIMATTER]: true,
+    [TaskIds.FUEL_CAPTURE]: false,
   },
 };
 

@@ -24,10 +24,7 @@ const update = (timestamp) => {
   const info = rocket.getInfo();
   if (info.thrust.isGreaterThan(0) && !get(progression).departed) {
     progression.update({ departed: true });
-    research.createTask(TaskIds.FUEL_COLLECTION);
-    research.createTask(TaskIds.COMBUSTION_MASS);
-    research.createTask(TaskIds.COMBUSTION_CONSUMPTION);
-    research.createTask(TaskIds.COMBUSTION_EFFICIENCY);
+    research.initialize();
   }
   if (get(progression).departed) process(delta, info);
 
@@ -64,8 +61,8 @@ const process = (delta, { distance, velocity, mass, fuel, thrust, consumption, c
     const task = active[taskId];
     task.progress = task.progress.plus(earthDelta.times(get(multitaskFactor)));
     if (task.progress.isGreaterThan(task.time)) {
-      task.complete();
       research.setCompleted(taskId);
+      task.complete();
     }
   });
   research.update((data) => data);

@@ -7,6 +7,7 @@
   import { lorentz, horizonTime } from '../lib/physics/physics';
   import { slide } from 'svelte/transition';
   import { TaskIds } from '../lib/stores/research';
+  import BigNumber from 'bignumber.js';
 
   let engines = [];
   let mass = ZERO;
@@ -61,7 +62,8 @@
     <div class="messages-container">
       <div class="messages">
         {#each messages as message (message.timestamp)}
-          <p transition:slide={{ duration: 300 }}>{`${message.timestamp} : ${message.text}`}</p>
+          <!-- <p transition:slide={{ duration: 300 }}>{`${message.timestamp} : ${message.text}`}</p> -->
+          <p transition:slide={{ duration: 300 }}>{`${message.text}`}</p>
         {/each}
       </div>
     </div>
@@ -71,6 +73,7 @@
       <p>Traveled: <span class="num">{$rocket.distance.toFixed(2)}</span>m</p>
       <p>Velocity: <span class="num">{$rocket.velocity.toFixed(2)}</span>m/s</p>
       <p>Lorentz Factor: <span class="num">{$lorentz.toPrecision(20)}</span>m/s</p>
+      <p>Proper Velocity: <span class="num">{$lorentz.times($rocket.velocity).toFixed(2)}</span>m/s</p>
     </div>
     <hr />
     <div class="column gap-small">
@@ -78,17 +81,19 @@
       <p>Free Material: <span class="num">{$rocket.material.toFixed(2)}</span>kg</p>
       <p>Fuel: <span class="num">{$rocket.fuel.toFixed(2)}</span>kg</p>
     </div>
-    {#if $progression.unlocks[TaskIds.FUEL_COLLECTION]}
+    {#if $progression.unlocks[TaskIds.FUEL_CAPTURE]}
       <hr />
-      {@const { mass, area, rate } = $rocket.capture}
+      {@const { step, mass, area, rate } = $rocket.capture}
       <div class="column gap-small">
         <h3>Fuel Capture Net: <span class="num">{area}</span><small>m<sup>2</sup></small></h3>
+        <!-- <p>Turns out there's not much gas in space... Gonna need a really big net.</p> -->
         <div class="row gap-small">
           <button on:click={() => expand()}
-            >Expand (<span class="num">+{area.sqrt().plus(1).pow(2).minus(area)}</span>)</button
+            >Expand (<span class="num">+{area.sqrt().plus(step).pow(2).minus(area)}</span>)</button
           >
           <button on:click={() => reduce()}
-            >Reduce (<span class="num">-{area.isGreaterThan(0) ? area.minus(area.sqrt().minus(1).pow(2)) : 0}</span
+            >Reduce (<span class="num"
+              >-{area.isGreaterThan(0) ? area.minus(BigNumber.max(0, area.sqrt().minus(step).pow(2))) : 0}</span
             >)</button
           >
         </div>
@@ -110,21 +115,22 @@
             <button on:click={() => build(key)}>Build</button>
             <button on:click={() => recycle(key)}>Recycle</button>
           </div>
-          <p>
-            Mass: <span class="num">{engine.count.times(engine.mass).toFixed(2)}</span>kg (<span class="num">{engine.mass.toFixed(2)}</span
-            >PU)
-          </p>
-          <p>
-            Fuel Consumption: <span class="num">{engine.count.times(engine.consumption).toFixed(2)}</span>kg/s (<span class="num"
-              >{engine.consumption.toFixed(2)}</span
-            >PU)
-          </p>
-          <p>
-            Output: <span class="num">{engine.count.times(engine.output)}</span>J/kg (<span class="num"
-              >{engine.output}</span
-            >PU)
-          </p>
           {#if engine.count > 0}
+            <p>
+              Mass: <span class="num">{engine.count.times(engine.mass).toFixed(2)}</span>kg (<span class="num"
+                >{engine.mass.toFixed(2)}</span
+              >PU)
+            </p>
+            <p>
+              Fuel Consumption: <span class="num">{engine.count.times(engine.consumption).toFixed(2)}</span>kg/s (<span
+                class="num">{engine.consumption.toFixed(2)}</span
+              >PU)
+            </p>
+            <p>
+              Output: <span class="num">{engine.count.times(engine.output)}</span>J/kg (<span class="num"
+                >{engine.output}</span
+              >PU)
+            </p>
             {@const efficiency = 1 - Math.sqrt(engine.throttle * 0.01) * engine.loss}
             <div class="row" style="justify-content: space-between;">
               <label for="{key}-throttle">
