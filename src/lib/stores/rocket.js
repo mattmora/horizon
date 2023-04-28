@@ -13,16 +13,17 @@ export const initialRocket = {
   material: BigNumber(1000000),
   fuel: BigNumber(1000000),
   capture: {
+    count: ZERO,
     step: 2,
-    mass: BigNumber(0.3),
+    mass: BigNumber(0.5),
     area: ZERO,
     // rate: BigNumber('1.4e-22'),
-    rate: BigNumber('1.4e-17'),
+    rate: BigNumber('1.4e-14'),
   },
   engines: {
     [Engines.COMBUSTION]: {
       count: BigNumber(10),
-      mass: 500,
+      mass: BigNumber(500),
       output: BigNumber('140000000'),
       consumption: BigNumber(30),
       loss: 0.75,
@@ -31,7 +32,7 @@ export const initialRocket = {
     },
     [Engines.FUSION]: {
       count: BigNumber(0),
-      mass: 500,
+      mass: BigNumber(8000),
       output: BigNumber('640000000000000'),
       consumption: BigNumber(30),
       loss: 0.75,
@@ -40,7 +41,7 @@ export const initialRocket = {
     },
     [Engines.ANTIMATTER]: {
       count: BigNumber(0),
-      mass: 500,
+      mass: BigNumber(50000),
       output: CSQ,
       consumption: BigNumber(30),
       loss: 0.75,
@@ -81,11 +82,17 @@ const createRocket = () => {
     return false;
   };
 
-  const tryExpand = () => {
+  const tryExpand = (tryCount = 1) => {
     const { material, capture } = get(store);
     const { mass, area } = capture;
-    const cost = area.sqrt().plus(capture.step).pow(2).minus(area).times(mass);
+    const cost = area
+      .sqrt()
+      .plus(capture.step * tryCount)
+      .pow(2)
+      .minus(area)
+      .times(mass);
     if (material.isGreaterThanOrEqualTo(cost)) {
+      capture.count = capture.count.plus(tryCount);
       capture.area = area.sqrt().plus(1).pow(2);
       get(store).material = material.minus(cost);
       update((data) => data);
@@ -94,13 +101,20 @@ const createRocket = () => {
     return false;
   };
 
-  const tryReduce = () => {
+  const tryReduce = (tryCount = 1) => {
     const { material, capture } = get(store);
     const { mass, area } = capture;
     if (area.isGreaterThan(0)) {
-      const newArea = BigNumber.max(0, area.sqrt().minus(capture.step).pow(2));
+      const newArea = BigNumber.max(
+        0,
+        area
+          .sqrt()
+          .minus(capture.step * tryCount)
+          .pow(2),
+      );
       const cost = area.minus(newArea).times(mass);
       get(store).material = material.plus(cost);
+      capture.count = capture.count.minus(tryCount);
       capture.area = newArea;
       update((data) => data);
       return true;
@@ -112,7 +126,7 @@ const createRocket = () => {
     subscribe,
     set,
     update: (updated) => update((current) => ({ ...current, ...updated })),
-    reset: () => set(initialRocket),
+    reset: () => set(clone(initialRocket)),
     getInfo: () => {
       const { material, fuel, engines, velocity, distance, capture } = get(store);
       let mass = fuel.plus(material);
@@ -134,6 +148,16 @@ const createRocket = () => {
     tryRecycle,
     tryExpand,
     tryReduce,
+    upgradeCapture: (upgrade) => {
+      const { capture } = get(store);
+      const count = capture.count;
+      tryReduce(key, count);
+      get(store).capture = {
+        ...get(store).capture,
+        ...upgrade,
+      };
+      tryExpand(key, count);
+    },
     upgradeEngines: (key, upgrade) => {
       const { engines } = get(store);
       const count = engines[key].count;

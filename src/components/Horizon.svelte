@@ -88,13 +88,9 @@
         <h3>Fuel Capture Net: <span class="num">{area}</span><small>m<sup>2</sup></small></h3>
         <!-- <p>Turns out there's not much gas in space... Gonna need a really big net.</p> -->
         <div class="row gap-small">
-          <button on:click={() => expand()}
-            >Expand (<span class="num">+{area.sqrt().plus(step).pow(2).minus(area)}</span>)</button
-          >
+          <button on:click={() => expand()}>Expand (<span class="num">+{area.sqrt().plus(step).pow(2).minus(area)}</span>)</button>
           <button on:click={() => reduce()}
-            >Reduce (<span class="num"
-              >-{area.isGreaterThan(0) ? area.minus(BigNumber.max(0, area.sqrt().minus(step).pow(2))) : 0}</span
-            >)</button
+            >Reduce (<span class="num">-{area.isGreaterThan(0) ? area.minus(BigNumber.max(0, area.sqrt().minus(step).pow(2))) : 0}</span>)</button
           >
         </div>
         <p>
@@ -117,19 +113,15 @@
           </div>
           {#if engine.count > 0}
             <p>
-              Mass: <span class="num">{engine.count.times(engine.mass).toFixed(2)}</span>kg (<span class="num"
-                >{engine.mass.toFixed(2)}</span
+              Mass: <span class="num">{engine.count.times(engine.mass).toFixed(2)}</span>kg (<span class="num">{engine.mass.toFixed(2)}</span>PU)
+            </p>
+            <p>
+              Fuel Consumption: <span class="num">{engine.count.times(engine.consumption).toFixed(2)}</span>kg/s (<span class="num"
+                >{engine.consumption.toFixed(2)}</span
               >PU)
             </p>
             <p>
-              Fuel Consumption: <span class="num">{engine.count.times(engine.consumption).toFixed(2)}</span>kg/s (<span
-                class="num">{engine.consumption.toFixed(2)}</span
-              >PU)
-            </p>
-            <p>
-              Output: <span class="num">{engine.count.times(engine.output)}</span>J/kg (<span class="num"
-                >{engine.output}</span
-              >PU)
+              Output: <span class="num">{engine.count.times(engine.output)}</span>J/kg (<span class="num">{engine.output}</span>PU)
             </p>
             {@const efficiency = 1 - Math.sqrt(engine.throttle * 0.01) * engine.loss}
             <div class="row" style="justify-content: space-between;">
@@ -142,14 +134,7 @@
               </p>
             </div>
 
-            <input
-              type="range"
-              min="0"
-              max="100"
-              class="slider"
-              id="{key}-throttle"
-              bind:value={$rocket.engines[key].throttle}
-            />
+            <input type="range" min="0" max="100" class="slider" id="{key}-throttle" bind:value={$rocket.engines[key].throttle} />
             <p>
               Thrust: <span class="num">{engine.thrust.times($rocket.fuel > 0 ? 1 : 0).toFixed(0)}</span>N
             </p>

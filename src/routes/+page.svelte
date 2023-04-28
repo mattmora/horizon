@@ -2,7 +2,13 @@
   import { onMount } from 'svelte';
   import Earth from '../components/Earth.svelte';
   import Horizon from '../components/Horizon.svelte';
-  import { start } from '../lib/physics/physics';
+  import { earthTime, horizonTime, lorentz, multitaskFactor, start } from '../lib/physics/physics';
+  import { progression } from '../lib/stores/progression';
+  import { research } from '../lib/stores/research';
+  import { Engines, rocket } from '../lib/stores/rocket';
+  import { ONE, ZERO } from '../lib/physics/constants';
+  import { loadState, saveState } from '../lib/storage';
+  import { get } from 'svelte/store';
 
   const input = {};
   const toggle = {};
@@ -16,7 +22,25 @@
     input[e.key.toLowerCase()] = 0;
   };
 
+  let optionsVisible = false;
+  const toggleOptions = () => {
+    optionsVisible = !optionsVisible;
+  };
+
+  const reset = () => {
+    progression.reset();
+    research.reset();
+    rocket.reset();
+    lorentz.set(ONE);
+    horizonTime.set(ZERO);
+    earthTime.set(ZERO);
+    multitaskFactor.set(1);
+    // optionsVisible = false;
+  };
+
   onMount(() => {
+    loadState();
+    setInterval(saveState, 1000);
     start();
   });
 </script>
@@ -24,6 +48,12 @@
 <svelte:window on:keydown={onKeyDown} on:keyup={onKeyUp} />
 
 <main>
+  <div class="options">
+    <button class="toggle" on:click={toggleOptions}>&#9776;</button>
+    {#if optionsVisible}
+      <button on:click={reset}>Reset</button>
+    {/if}
+  </div>
   <div class="column" style={toggle.x ? 'width:100%;' : ''}>
     <Earth />
   </div>
@@ -45,5 +75,21 @@
     height: 100vh;
     background-color: var(--background);
     transition: width 3s;
+  }
+
+  .options {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .toggle {
+    font-weight: bold;
+    width: 32px;
+    height: 32px;
+    padding: 0;
   }
 </style>

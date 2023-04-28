@@ -2,27 +2,36 @@
 import { get, writable } from 'svelte/store';
 import { Engines } from './rocket';
 import { TaskIds } from './research';
+import clone from 'just-clone';
 
-const initial = {
+export const initialProgression = {
   departed: false,
   unlocks: {
     [Engines.COMBUSTION]: true,
-    [Engines.FUSION]: true,
-    [Engines.ANTIMATTER]: true,
-    [TaskIds.FUEL_CAPTURE]: false,
+    [TaskIds.RESEARCH_AUTOMATION]: true,
   },
 };
 
 const createProgression = () => {
-  const store = writable(initial);
+  const store = writable(clone(initialProgression));
   const { subscribe, set, update } = store;
+
+  const updateProgression = (data) => {
+    update((current) => {
+      const updated = {
+        ...current,
+        ...data,
+      };
+      return updated;
+    });
+  };
 
   return {
     subscribe,
     set,
-    update: (updated) => update((current) => ({ ...current, ...updated })),
+    update: updateProgression,
     unlock: (unlock) => update((current) => ({ ...current, unlocks: { ...current.unlocks, ...unlock } })),
-    reset: () => set(initial),
+    reset: () => set(clone(initialProgression)),
   };
 };
 

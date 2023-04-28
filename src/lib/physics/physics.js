@@ -3,12 +3,12 @@ import BigNumber from 'bignumber.js';
 import { C, CSQ, HOUR, ONE, TIME_UNIT, ZERO } from './constants';
 import { get, writable } from 'svelte/store';
 import { progression } from '../stores/progression';
-import { TaskIds, research } from '../stores/research';
+import { TaskIds, Tasks, research } from '../stores/research';
 
 // process physics, does not store state
-let previousTimestamp;
+export const lastUpdate = writable(0);
 export const start = () => {
-  previousTimestamp = performance.now();
+  if (get(lastUpdate) == 0) lastUpdate.set(Date.now());
 
   requestAnimationFrame(update);
 };
@@ -18,8 +18,9 @@ export const horizonTime = writable(ZERO);
 export const earthTime = writable(ZERO);
 export const multitaskFactor = writable(1);
 
-const update = (timestamp) => {
-  const delta = TIME_UNIT.times((timestamp - previousTimestamp) * 0.001);
+const update = () => {
+  const timestamp = Date.now();
+  const delta = TIME_UNIT.times((timestamp - get(lastUpdate)) * 0.001);
 
   const info = rocket.getInfo();
   if (info.thrust.isGreaterThan(0) && !get(progression).departed) {
@@ -28,7 +29,7 @@ const update = (timestamp) => {
   }
   if (get(progression).departed) process(delta, info);
 
-  previousTimestamp = timestamp;
+  lastUpdate.set(timestamp);
   requestAnimationFrame(update);
 };
 
@@ -62,7 +63,7 @@ const process = (delta, { distance, velocity, mass, fuel, thrust, consumption, c
     task.progress = task.progress.plus(earthDelta.times(get(multitaskFactor)));
     if (task.progress.isGreaterThan(task.time)) {
       research.setCompleted(taskId);
-      task.complete();
+      Tasks[taskId].complete(task);
     }
   });
   research.update((data) => data);

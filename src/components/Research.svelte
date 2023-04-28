@@ -10,22 +10,13 @@
     <div class="column gap-small">
       <h3>Available</h3>
       {#each Object.keys($research.available) as taskId (taskId)}
-        {@const task = $research.available[taskId]}
+        {@const task = $research.active[taskId] ?? $research.available[taskId]}
         <button on:click={() => research.setActive(taskId)} disabled={$research.active[taskId]}>
           <p>
             <b>{task.title}:</b>
             {task.description}
-            <!--(<span class="num">{task.time.toFixed(0)}s</span>) -->(<span class="num"
-              >{task.progress.div(task.time).times(100).toFixed(2)}%</span
-            >)
+            (<span class="num">{task.progress.div(task.time).times(100).toFixed(2)}%</span>)
           </p>
-          <!-- <p>
-            <b>{task.title}:</b>
-            {task.description}
-            (<span class="num"
-              >{task.progress.toFixed(0)}/{task.time}</span
-            >)
-          </p> -->
         </button>
       {/each}
     </div>
@@ -37,11 +28,7 @@
       {#each Object.keys($research.active) as taskId (taskId)}
         {@const task = $research.active[taskId]}
         {@const rate = ONE.times(100).div(task.time).times($multitaskFactor)}
-        {@const formattedRate = rate.isLessThan(0.01)
-          ? rate.isLessThan(0.0001)
-            ? rate.toExponential(1)
-            : rate.toFixed(4)
-          : rate.toFixed(2)}
+        {@const formattedRate = rate.isLessThan(0.01) ? (rate.isLessThan(0.0001) ? rate.toExponential(1) : rate.toFixed(4)) : rate.toFixed(2)}
         <button on:click={() => research.setAvailable(taskId)}
           ><p>
             <b>{task.title}</b>

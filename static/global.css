@@ -18,8 +18,8 @@
   --space-xxxlg: 144px;
 
   --size-small: 13px;
-  --size-copy: 16px;
-  --size-h3: 21px;
+  --size-copy: 19px;
+  --size-h3: 24px;
   --size-h2: 34px;
   --size-h1: 55px;
   --size-title: 89px;
@@ -92,6 +92,10 @@ button {
   padding: 4px;
   cursor: pointer;
   font-family: 'Atkinson Hyperlegible';
+  font-size: var(--size-copy);
+  /* border-width: 1px; */
+  /* border-style: solid; */
+  /* border-radius: 2px; */
 }
 
 button:hover:not(:disabled),
