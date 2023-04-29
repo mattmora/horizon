@@ -93,6 +93,7 @@ button {
   cursor: pointer;
   font-family: 'Atkinson Hyperlegible';
   font-size: var(--size-copy);
+  text-align: left;
   /* border-width: 1px; */
   /* border-style: solid; */
   /* border-radius: 2px; */
@@ -113,6 +114,16 @@ button:disabled:not(.no-interact) {
   cursor: default;
 }
 
+input[type='radio'] {
+  accent-color: var(--secondary);
+  cursor: pointer;
+  height: 100%;
+}
+
+.radio-label {
+  cursor: pointer;
+}
+
 .slider {
   -webkit-appearance: none;
   appearance: none;
@@ -128,6 +139,7 @@ button:disabled:not(.no-interact) {
 .slider:hover:not(:disabled),
 :focus {
   opacity: 1;
+  cursor: pointer;
 }
 
 .slider::-webkit-slider-thumb {

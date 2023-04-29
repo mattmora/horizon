@@ -35,7 +35,7 @@
     horizonTime.set(ZERO);
     earthTime.set(ZERO);
     multitaskFactor.set(1);
-    // optionsVisible = false;
+    optionsVisible = false;
   };
 
   onMount(() => {
@@ -91,5 +91,6 @@
     width: 32px;
     height: 32px;
     padding: 0;
+    text-align: center;
   }
 </style>

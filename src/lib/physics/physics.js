@@ -52,17 +52,46 @@ const process = (delta, { distance, velocity, mass, fuel, thrust, consumption, c
 
   rocket.update({ distance: newDistance, velocity: newVelocity, fuel: fuel.plus(fuelCaptured).minus(fuelConsumed) });
 
+  const numDelta = +delta;
+  const { engines } = get(rocket);
+  Object.keys(engines).forEach((key) => {
+    const { automation } = engines[key];
+    if (automation.mode !== 'off') {
+      if (automation.timer >= automation.interval) {
+        const count = Math.floor(automation.timer / automation.interval);
+        if (automation.mode === 'build') rocket.tryBuild(key, count);
+        else if (automation.mode === 'recycle') rocket.tryRecycle(key, count);
+        automation.timer -= automation.interval * count;
+      }
+      automation.timer += numDelta;
+    }
+  });
+  const { automation } = capture;
+  if (automation.mode !== 'off') {
+    if (automation.timer >= automation.interval) {
+      const count = Math.floor(automation.timer / automation.interval);
+      if (automation.mode === 'expand') rocket.tryExpand(count);
+      else if (automation.mode === 'reduce') rocket.tryReduce(count);
+      automation.timer -= automation.interval * count;
+    }
+    automation.timer += numDelta;
+  }
+
   horizonTime.set(get(horizonTime).plus(delta.div(TIME_UNIT)));
 
   const earthDelta = lorentzFactor.times(delta);
-  const active = get(research).active;
-  const taskIds = Object.keys(active);
-  multitaskFactor.set(1 / Math.sqrt(taskIds.length));
-  taskIds.forEach((taskId) => {
+  const { active, completed } = get(research);
+  const activeTaskIds = Object.keys(active);
+  multitaskFactor.set(1 / Math.sqrt(activeTaskIds.length));
+  activeTaskIds.forEach((taskId) => {
     const task = active[taskId];
     task.progress = task.progress.plus(earthDelta.times(get(multitaskFactor)));
     if (task.progress.isGreaterThan(task.time)) {
       research.setCompleted(taskId);
+      if (Object.keys(completed).length >= 3 && !get(progression).unlocks[TaskIds.RESEARCH_AUTOMATION]) {
+        console.log(completed);
+        research.createTask(TaskIds.RESEARCH_AUTOMATION);
+      }
       Tasks[taskId].complete(task);
     }
   });

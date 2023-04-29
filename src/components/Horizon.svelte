@@ -5,9 +5,10 @@
   import Box from './Box.svelte';
   import { ZERO } from '../lib/physics/constants';
   import { lorentz, horizonTime } from '../lib/physics/physics';
-  import { slide } from 'svelte/transition';
   import { TaskIds } from '../lib/stores/research';
   import BigNumber from 'bignumber.js';
+  import RadioGroup from './RadioGroup.svelte';
+  import { slide } from 'svelte/transition';
 
   let engines = [];
   let mass = ZERO;
@@ -87,14 +88,26 @@
       <div class="column gap-small">
         <h3>Fuel Capture Net: <span class="num">{area}</span><small>m<sup>2</sup></small></h3>
         <!-- <p>Turns out there's not much gas in space... Gonna need a really big net.</p> -->
-        <div class="row gap-small">
-          <button on:click={() => expand()}>Expand (<span class="num">+{area.sqrt().plus(step).pow(2).minus(area)}</span>)</button>
-          <button on:click={() => reduce()}
-            >Reduce (<span class="num">-{area.isGreaterThan(0) ? area.minus(BigNumber.max(0, area.sqrt().minus(step).pow(2))) : 0}</span>)</button
-          >
+        <div class="row gap-medium">
+          <div class="row gap-small">
+            <button disabled={$rocket.capture.automation.mode !== 'off'} on:click={() => expand()}
+              >Expand (<span class="num">+{area.sqrt().plus(step).pow(2).minus(area)}</span>)</button
+            >
+            <button disabled={$rocket.capture.automation.mode !== 'off'} on:click={() => reduce()}
+              >Reduce (<span class="num">-{area.isGreaterThan(0) ? area.minus(BigNumber.max(0, area.sqrt().minus(step).pow(2))) : 0}</span>)</button
+            >
+          </div>
+          {#if $progression.unlocks[TaskIds.FUEL_CAPTURE_AUTOMATION]}
+            <RadioGroup
+              title="Auto"
+              name={TaskIds.FUEL_CAPTURE_AUTOMATION}
+              options={['expand', 'reduce', 'off']}
+              bind:group={$rocket.capture.automation.mode}
+            />
+          {/if}
         </div>
         <p>
-          Mass: <span class="num">{area.times(mass)}</span>kg (<span class="num">{mass}</span>PU)
+          Mass: <span class="num">{area.times(mass).toFixed(2)}</span>kg (<span class="num">{mass}</span>PU)
         </p>
         <p>
           Capture Rate: <span class="num">{rate.times(area).toExponential(2)}</span>kg/m of travel
@@ -107,10 +120,17 @@
         <hr />
         <div class="column gap-small">
           <h3>{Case.capital(key)} Engines: <span class="num">{engine.count}</span></h3>
-          <div class="row gap-small">
-            <button on:click={() => build(key)}>Build</button>
-            <button on:click={() => recycle(key)}>Recycle</button>
+          <div class="row gap-medium">
+            <div class="row gap-small">
+              <button disabled={$rocket.engines[key].automation.mode !== 'off'} on:click={() => build(key)}>Build</button>
+              <button disabled={$rocket.engines[key].automation.mode !== 'off'} on:click={() => recycle(key)}>Recycle</button>
+            </div>
+            <!-- AUTOMATION INPUT -->
+            {#if $progression.unlocks[TaskIds[key].AUTOMATION]}
+              <RadioGroup title="Auto" name={TaskIds[key].AUTOMATION} options={['build', 'recycle', 'off']} bind:group={$rocket.engines[key].automation.mode} />
+            {/if}
           </div>
+          <!-- ENGINE STATS -->
           {#if engine.count > 0}
             <p>
               Mass: <span class="num">{engine.count.times(engine.mass).toFixed(2)}</span>kg (<span class="num">{engine.mass.toFixed(2)}</span>PU)
@@ -123,6 +143,7 @@
             <p>
               Output: <span class="num">{engine.count.times(engine.output)}</span>J/kg (<span class="num">{engine.output}</span>PU)
             </p>
+            <!-- THROTTLE INPUT & INFO -->
             {@const efficiency = 1 - Math.sqrt(engine.throttle * 0.01) * engine.loss}
             <div class="row" style="justify-content: space-between;">
               <label for="{key}-throttle">
@@ -133,7 +154,6 @@
                 <span class="num">{(efficiency * 100).toFixed(1)}%</span> Propulsion Efficiency
               </p>
             </div>
-
             <input type="range" min="0" max="100" class="slider" id="{key}-throttle" bind:value={$rocket.engines[key].throttle} />
             <p>
               Thrust: <span class="num">{engine.thrust.times($rocket.fuel > 0 ? 1 : 0).toFixed(0)}</span>N
@@ -167,19 +187,5 @@
   div.messages > p {
     padding: var(--space-xxsm);
     color: var(--secondary);
-  }
-
-  h6 {
-    position: absolute;
-    top: 7px;
-    left: 16px;
-    z-index: 10;
-    padding: 0 2px;
-    height: 14px;
-    background: var(--background);
-    width: min(calc(100% - 32px), 138px);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 </style>

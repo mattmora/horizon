@@ -17,7 +17,7 @@
     </div>
     <hr />
     <details>
-      <summary>Horizon Mission Memo</summary>
+      <summary><span class:emphasis={!$progression.departed}>Horizon Mission Memo</span></summary>
       <Intro />
     </details>
     <hr />

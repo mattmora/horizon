@@ -7,15 +7,17 @@
 <div>
   <h2>Research Tasks</h2>
   <div class="row gap-medium">
-    <div class="column gap-small">
+    <div class="column gap-small" style="width:70%">
       <h3>Available</h3>
       {#each Object.keys($research.available) as taskId (taskId)}
         {@const task = $research.active[taskId] ?? $research.available[taskId]}
         <button on:click={() => research.setActive(taskId)} disabled={$research.active[taskId]}>
           <p>
             <b>{task.title}:</b>
-            {task.description}
-            (<span class="num">{task.progress.div(task.time).times(100).toFixed(2)}%</span>)
+            <span class="plain"
+              >{task.description}
+              (<span class="num">{task.progress.div(task.time).times(100).toFixed(2)}%</span>)</span
+            >
           </p>
         </button>
       {/each}
@@ -31,8 +33,7 @@
         {@const formattedRate = rate.isLessThan(0.01) ? (rate.isLessThan(0.0001) ? rate.toExponential(1) : rate.toFixed(4)) : rate.toFixed(2)}
         <button on:click={() => research.setAvailable(taskId)}
           ><p>
-            <b>{task.title}</b>
-            (<span class="num">{formattedRate}%</span> per second)
+            <b>{task.title}</b> <span class="plain"> (<span class="num">{formattedRate}%</span> per second)</span>
           </p>
         </button>
       {/each}
@@ -65,5 +66,9 @@
 
   b {
     font-style: italic;
+  }
+
+  .plain {
+    color: var(--copy);
   }
 </style>

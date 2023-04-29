@@ -8,7 +8,7 @@ export const initialProgression = {
   departed: false,
   unlocks: {
     [Engines.COMBUSTION]: true,
-    [TaskIds.RESEARCH_AUTOMATION]: true,
+    // [TaskIds[Engines.COMBUSTION].AUTOMATION]: true,
   },
 };
 
