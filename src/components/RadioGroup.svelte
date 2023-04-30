@@ -5,7 +5,7 @@
   export let group; //binding
 </script>
 
-<h4>{title}:</h4>
+<p>{title}:</p>
 {#each options as option}
   <div class="row gap-small">
     <input type="radio" id="{name}-{option}" {name} value={option} bind:group /><label class="radio-label" for="{name}-{option}">{option}</label>

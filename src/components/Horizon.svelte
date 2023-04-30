@@ -124,6 +124,7 @@
               options={['expand', 'reduce', 'off']}
               bind:group={$rocket.capture.automation.mode}
             />
+            <p>(ea. <span class="num">{$rocket.capture.automation.interval.toFixed(2)}</span>s)</p>
           {/if}
         </div>
         <p>
@@ -148,6 +149,7 @@
             <!-- AUTOMATION INPUT -->
             {#if $progression.unlocks[TaskIds[key].AUTOMATION]}
               <RadioGroup title="Auto" name={TaskIds[key].AUTOMATION} options={['build', 'recycle', 'off']} bind:group={$rocket.engines[key].automation.mode} />
+              <p>(ea. <span class="num">{$rocket.engines[key].automation.interval.toFixed(2)}</span>s)</p>
             {/if}
           </div>
           <!-- ENGINE STATS -->
