@@ -210,6 +210,11 @@ const createResearch = () => {
     update((data) => data);
   };
 
+  let onComplete = () => {};
+  const setCompleteCallback = (c) => {
+    onComplete = c;
+  };
+
   return {
     subscribe,
     set,
@@ -229,7 +234,8 @@ const createResearch = () => {
     },
     setCompleted: (taskId) => {
       const { available, active, completed } = get(store);
-      completed[taskId] = available[taskId];
+      const task = (completed[taskId] = available[taskId]);
+      onComplete(task);
       delete available[taskId];
       delete active[taskId];
       update((data) => data);
@@ -237,6 +243,7 @@ const createResearch = () => {
     initialize: () => {
       initialAvailable.forEach((taskId) => createTask(taskId));
     },
+    setCompleteCallback,
   };
 };
 

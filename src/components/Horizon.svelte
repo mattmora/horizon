@@ -5,7 +5,7 @@
   import Box from './Box.svelte';
   import { ZERO } from '../lib/physics/constants';
   import { lorentz, horizonTime } from '../lib/physics/physics';
-  import { TaskIds } from '../lib/stores/research';
+  import { TaskIds, research } from '../lib/stores/research';
   import BigNumber from 'bignumber.js';
   import RadioGroup from './RadioGroup.svelte';
   import { slide } from 'svelte/transition';
@@ -42,6 +42,10 @@
     }
   };
 
+  research.setCompleteCallback((task) => {
+    postMessage(`Completed research: ${task.title}`);
+  });
+
   let messages = [];
   const postMessage = (message) => {
     console.log(message);
@@ -73,8 +77,24 @@
       <p>Time: <span class="num">{$horizonTime.toFixed(2)}</span>s</p>
       <p>Traveled: <span class="num">{$rocket.distance.toFixed(2)}</span>m</p>
       <p>Velocity: <span class="num">{$rocket.velocity.toFixed(2)}</span>m/s</p>
-      <p>Lorentz Factor: <span class="num">{$lorentz.toPrecision(20)}</span>m/s</p>
-      <p>Proper Velocity: <span class="num">{$lorentz.times($rocket.velocity).toFixed(2)}</span>m/s</p>
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <p
+        class="inspectable"
+        on:click={() =>
+          postMessage(
+            `Lorentz Factor: A quantification of how much time dilates and length contracts for Horizon, based on its velocity. As it increases, so do proper velocity and the relative passage of time on Earth.`,
+          )}
+      >
+        Lorentz Factor<sup>?</sup>: <span class="num">{$lorentz.toPrecision(20)}</span>m/s
+      </p>
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <p
+        class="inspectable"
+        on:click={() =>
+          postMessage('Proper Velocity: The speed of Horizon as observed from Earth. It can exceed the speed of light due to length contraction.')}
+      >
+        Proper Velocity<sup>?</sup>: <span class="num">{$lorentz.times($rocket.velocity).toFixed(2)}</span>m/s
+      </p>
     </div>
     <hr />
     <div class="column gap-small">
@@ -86,7 +106,7 @@
       <hr />
       {@const { step, mass, area, rate } = $rocket.capture}
       <div class="column gap-small">
-        <h3>Fuel Capture Net: <span class="num">{area}</span><small>m<sup>2</sup></small></h3>
+        <h3>Fuel Capture Net: <span class="num">{area}</span>m<sup>2</sup></h3>
         <!-- <p>Turns out there's not much gas in space... Gonna need a really big net.</p> -->
         <div class="row gap-medium">
           <div class="row gap-small">
@@ -150,8 +170,13 @@
                 <span class:emphasis-alt={!$progression.departed}>Engine Array Throttle:</span>
                 <span class="num">{engine.throttle}%</span>
               </label>
-              <p>
-                <span class="num">{(efficiency * 100).toFixed(1)}%</span> Propulsion Efficiency
+              <!-- svelte-ignore a11y-click-events-have-key-events -->
+              <p
+                class="inspectable"
+                on:click={() =>
+                  postMessage(`Propulsion Efficiency: The portion of output energy that can be converted to propulsive force at the current throttle.`)}
+              >
+                <span class="num">{(efficiency * 100).toFixed(1)}%</span> Propulsion Efficiency<sup>?</sup>
               </p>
             </div>
             <input type="range" min="0" max="100" class="slider" id="{key}-throttle" bind:value={$rocket.engines[key].throttle} />
@@ -173,7 +198,7 @@
     flex-direction: column-reverse;
     overflow: auto;
     width: 100%;
-    height: 80px;
+    height: 120px;
     border: 1px solid var(--primary);
     background: var(--background);
   }
@@ -185,7 +210,8 @@
   }
 
   div.messages > p {
-    padding: var(--space-xxsm);
+    padding: var(--space-xxsm) var(--space-xsm);
     color: var(--secondary);
+    border-top: 1px dashed gray;
   }
 </style>

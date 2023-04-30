@@ -49,6 +49,16 @@ h4 {
   font-weight: bold;
 }
 
+sup,
+sub {
+  vertical-align: baseline;
+  position: relative;
+  top: -0.4em;
+}
+sub {
+  top: 0.4em;
+}
+
 .row {
   display: flex;
   flex-direction: row;
@@ -85,6 +95,10 @@ span.emphasis {
 span.emphasis-alt {
   font-weight: bold;
   color: var(--quaternary);
+}
+
+.inspectable {
+  cursor: help;
 }
 
 button {
