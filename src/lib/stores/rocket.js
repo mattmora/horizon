@@ -42,7 +42,7 @@ export const initialRocket = {
     },
     [Engines.FUSION]: {
       count: BigNumber(0),
-      mass: BigNumber(8000),
+      mass: BigNumber(5000),
       output: BigNumber('640000000000000'),
       consumption: BigNumber(10),
       loss: 0.75,
@@ -56,7 +56,7 @@ export const initialRocket = {
     },
     [Engines.ANTIMATTER]: {
       count: BigNumber(0),
-      mass: BigNumber(50000),
+      mass: BigNumber(25000),
       output: CSQ,
       consumption: BigNumber(1),
       loss: 0.75,

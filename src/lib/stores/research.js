@@ -141,7 +141,7 @@ export const Tasks = {
   }),
 
   // ANTIMATTER
-  [TaskIds[Engines.ANTIMATTER].ENGINE]: defineTask('Antimatter Engine', 'Generate thrust with the power of antimatter annihilation.', 5000, (t) => {
+  [TaskIds[Engines.ANTIMATTER].ENGINE]: defineTask('Antimatter Engine', 'Generate thrust with the power of antimatter annihilation.', 3000, (t) => {
     progression.unlock({ [Engines.ANTIMATTER]: true });
     research.createTask(TaskIds[Engines.ANTIMATTER].AUTOMATION);
     research.createTask(TaskIds[Engines.ANTIMATTER].MASS);
