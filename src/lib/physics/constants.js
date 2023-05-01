@@ -9,7 +9,7 @@ export const YEAR = BigNumber(31558149.5); // Sidereal year
 export const TIME_UNIT = SECOND;
 
 export const DECIMAL_PLACES = 100;
-BigNumber.config({ DECIMAL_PLACES });
+BigNumber.config({ DECIMAL_PLACES, ROUNDING_MODE: BigNumber.ROUND_FLOOR });
 
 export const INTEGRATION_THRESHOLD = 1;
 export const MAX_INTEGRATION_STEPS = 100000;
