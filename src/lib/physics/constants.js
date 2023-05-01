@@ -11,6 +11,9 @@ export const TIME_UNIT = SECOND;
 export const DECIMAL_PLACES = 100;
 BigNumber.config({ DECIMAL_PLACES });
 
+export const INTEGRATION_THRESHOLD = 1;
+export const MAX_INTEGRATION_STEPS = 100000;
+
 export const ZERO = BigNumber(0);
 export const ONE = BigNumber(1);
 export const C = BigNumber(299792458);

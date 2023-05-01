@@ -1,6 +1,6 @@
 import { rocket } from '../stores/rocket';
 import BigNumber from 'bignumber.js';
-import { C, CSQ, HOUR, ONE, TIME_UNIT, ZERO } from './constants';
+import { C, CSQ, HOUR, MAX_INTEGRATION_STEPS, INTEGRATION_THRESHOLD, ONE, TIME_UNIT, ZERO } from './constants';
 import { get, writable } from 'svelte/store';
 import { progression } from '../stores/progression';
 import { TaskIds, Tasks, research } from '../stores/research';
@@ -22,12 +22,29 @@ const update = () => {
   const timestamp = Date.now();
   const delta = TIME_UNIT.times((timestamp - get(lastUpdate)) * 0.001);
 
-  const info = rocket.getInfo();
+  let info = rocket.getInfo();
   if (info.thrust.isGreaterThan(0) && !get(progression).departed) {
     progression.update({ departed: true });
     research.initialize();
   }
-  if (get(progression).departed) process(delta, info);
+
+  if (get(progression).departed) {
+    if (delta.isLessThan(INTEGRATION_THRESHOLD)) {
+      process(delta, info);
+    } else if (delta.isGreaterThanOrEqualTo(INTEGRATION_THRESHOLD * MAX_INTEGRATION_STEPS)) {
+      for (let i = 0; i < MAX_INTEGRATION_STEPS; i++) {
+        info = rocket.getInfo();
+        process(delta.div(MAX_INTEGRATION_STEPS), info);
+      }
+    } else {
+      const steps = Math.ceil(+delta / INTEGRATION_THRESHOLD);
+      console.log(steps);
+      for (let i = 0; i < steps; i++) {
+        info = rocket.getInfo();
+        process(delta.div(steps), info);
+      }
+    }
+  }
 
   lastUpdate.set(timestamp);
   requestAnimationFrame(update);
@@ -80,7 +97,7 @@ const process = (delta, { distance, velocity, mass, fuel, thrust, consumption, c
   horizonTime.set(get(horizonTime).plus(delta.div(TIME_UNIT)));
 
   const earthDelta = lorentzFactor.times(delta);
-  const { active, completed } = get(research);
+  const { available, active, completed } = get(research);
   const activeTaskIds = Object.keys(active);
   multitaskFactor.set(1 / Math.sqrt(activeTaskIds.length));
   activeTaskIds.forEach((taskId) => {
@@ -88,11 +105,14 @@ const process = (delta, { distance, velocity, mass, fuel, thrust, consumption, c
     task.progress = task.progress.plus(earthDelta.times(get(multitaskFactor)));
     if (task.progress.isGreaterThan(task.time)) {
       research.setCompleted(taskId);
-      if (Object.keys(completed).length >= 3 && !get(progression).unlocks[TaskIds.RESEARCH_AUTOMATION]) {
-        console.log(completed);
+      Tasks[taskId].complete(task);
+      if (
+        Object.keys(completed).length >= 3 &&
+        available[TaskIds.RESEARCH_AUTOMATION] === undefined &&
+        !get(progression).unlocks[TaskIds.RESEARCH_AUTOMATION]
+      ) {
         research.createTask(TaskIds.RESEARCH_AUTOMATION);
       }
-      Tasks[taskId].complete(task);
     }
   });
   research.update((data) => data);

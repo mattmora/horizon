@@ -64,14 +64,14 @@ export const Tasks = {
     research.createTask(TaskIds.FUEL_CAPTURE_AUTOMATION);
     research.createTask(TaskIds.FUEL_CAPTURE_MASS);
   }),
-  [TaskIds.FUEL_CAPTURE_AUTOMATION]: defineTask('Fuel Capture Automation', 'Automatically expand or reduce the fuel capture net.', 50, (t) => {
+  [TaskIds.FUEL_CAPTURE_AUTOMATION]: defineTask('Fuel Capture Automation', 'Automatically expand or reduce the fuel capture net.', 30, (t) => {
     progression.unlock({ [TaskIds.FUEL_CAPTURE_AUTOMATION]: true });
     rocket.upgradeCapture({
       automation: { ...get(rocket).capture.automation, interval: Math.pow(0.9, t.iteration) },
     });
     research.createTask(TaskIds.FUEL_CAPTURE_AUTOMATION, t.iteration + 1);
   }),
-  [TaskIds.FUEL_CAPTURE_MASS]: defineTask('Fuel Capture Mass', 'Reduce material need to expand the fuel capture net.', 30, (t) => {
+  [TaskIds.FUEL_CAPTURE_MASS]: defineTask('Fuel Capture Mass', 'Reduce material need to expand the fuel capture net.', 25, (t) => {
     rocket.upgradeCapture({
       mass: initialRocket.capture.mass * Math.pow(0.85, t.iteration),
     });
@@ -79,7 +79,7 @@ export const Tasks = {
   }),
 
   // COMBUSTION
-  [TaskIds[Engines.COMBUSTION].AUTOMATION]: defineTask('Combustion Engine Automation', 'Automatically build or recycle combustion engines.', 50, (t) => {
+  [TaskIds[Engines.COMBUSTION].AUTOMATION]: defineTask('Combustion Engine Automation', 'Automatically build or recycle combustion engines.', 30, (t) => {
     progression.unlock({ [TaskIds[Engines.COMBUSTION].AUTOMATION]: true });
     rocket.upgradeEngines(Engines.COMBUSTION, {
       automation: { ...get(rocket).engines[Engines.COMBUSTION].automation, interval: Math.pow(0.9, t.iteration) },
@@ -94,7 +94,7 @@ export const Tasks = {
   }),
   [TaskIds[Engines.COMBUSTION].CONSUMPTION]: defineTask('Combustion Engine Consumption', 'Increase fuel consumption rate of combustion engines.', 25, (t) => {
     rocket.upgradeEngines(Engines.COMBUSTION, {
-      consumption: initialRocket.engines[Engines.COMBUSTION].consumption.plus(t.iteration * 30),
+      consumption: initialRocket.engines[Engines.COMBUSTION].consumption.times(t.iteration),
     });
     research.createTask(TaskIds[Engines.COMBUSTION].CONSUMPTION, t.iteration + 1);
   }),
@@ -108,12 +108,13 @@ export const Tasks = {
   // FUSION
   [TaskIds[Engines.FUSION].ENGINE]: defineTask('Fusion Engine', 'Generate thrust with the power of fusion.', 600, (t) => {
     progression.unlock({ [Engines.FUSION]: true });
+    research.createTask(TaskIds[Engines.ANTIMATTER].ENGINE);
+    research.createTask(TaskIds[Engines.FUSION].AUTOMATION);
     research.createTask(TaskIds[Engines.FUSION].MASS);
     research.createTask(TaskIds[Engines.FUSION].EFFICIENCY);
     research.createTask(TaskIds[Engines.FUSION].CONSUMPTION);
-    research.createTask(TaskIds[Engines.FUSION].AUTOMATION);
   }),
-  [TaskIds[Engines.FUSION].AUTOMATION]: defineTask('Fusion Engine Automation', 'Automatically build or recycle fusion engines.', 50, (t) => {
+  [TaskIds[Engines.FUSION].AUTOMATION]: defineTask('Fusion Engine Automation', 'Automatically build or recycle fusion engines.', 30, (t) => {
     progression.unlock({ [TaskIds[Engines.FUSION].AUTOMATION]: true });
     rocket.upgradeEngines(Engines.FUSION, {
       automation: { ...get(rocket).engines[Engines.FUSION].automation, interval: Math.pow(0.9, t.iteration) },
@@ -128,7 +129,7 @@ export const Tasks = {
   }),
   [TaskIds[Engines.FUSION].CONSUMPTION]: defineTask('Fusion Engine Consumption', 'Increase fuel consumption rate of fusion engines.', 25, (t) => {
     rocket.upgradeEngines(Engines.FUSION, {
-      consumption: initialRocket.engines[Engines.FUSION].consumption.plus(t.iteration * 30),
+      consumption: initialRocket.engines[Engines.FUSION].consumption.times(t.iteration),
     });
     research.createTask(TaskIds[Engines.FUSION].CONSUMPTION, t.iteration + 1);
   }),
@@ -140,14 +141,14 @@ export const Tasks = {
   }),
 
   // ANTIMATTER
-  [TaskIds[Engines.ANTIMATTER].ENGINE]: defineTask('Antimatter Engine', 'Generate thrust with the power of antimatter annihilation.', 100000, (t) => {
+  [TaskIds[Engines.ANTIMATTER].ENGINE]: defineTask('Antimatter Engine', 'Generate thrust with the power of antimatter annihilation.', 5000, (t) => {
     progression.unlock({ [Engines.ANTIMATTER]: true });
+    research.createTask(TaskIds[Engines.ANTIMATTER].AUTOMATION);
     research.createTask(TaskIds[Engines.ANTIMATTER].MASS);
     research.createTask(TaskIds[Engines.ANTIMATTER].EFFICIENCY);
     research.createTask(TaskIds[Engines.ANTIMATTER].CONSUMPTION);
-    research.createTask(TaskIds[Engines.ANTIMATTER].AUTOMATION);
   }),
-  [TaskIds[Engines.ANTIMATTER].AUTOMATION]: defineTask('Antimatter Engine Automation', 'Automatically build or recycle antimatter engines.', 50, (t) => {
+  [TaskIds[Engines.ANTIMATTER].AUTOMATION]: defineTask('Antimatter Engine Automation', 'Automatically build or recycle antimatter engines.', 30, (t) => {
     progression.unlock({ [TaskIds[Engines.ANTIMATTER].AUTOMATION]: true });
     rocket.upgradeEngines(Engines.ANTIMATTER, {
       automation: { ...get(rocket).engines[Engines.ANTIMATTER].automation, interval: Math.pow(0.9, t.iteration) },
@@ -162,7 +163,7 @@ export const Tasks = {
   }),
   [TaskIds[Engines.ANTIMATTER].CONSUMPTION]: defineTask('Antimatter Engine Consumption', 'Increase fuel consumption rate of antimatter engines.', 25, (t) => {
     rocket.upgradeEngines(Engines.ANTIMATTER, {
-      consumption: initialRocket.engines[Engines.ANTIMATTER].consumption.plus(t.iteration * 30),
+      consumption: initialRocket.engines[Engines.ANTIMATTER].consumption.times(t.iteration),
     });
     research.createTask(TaskIds[Engines.ANTIMATTER].CONSUMPTION, t.iteration + 1);
   }),
@@ -177,10 +178,10 @@ export const Tasks = {
 const initialAvailable = [
   TaskIds.FUEL_CAPTURE,
   TaskIds[Engines.FUSION].ENGINE,
+  TaskIds[Engines.COMBUSTION].AUTOMATION,
   TaskIds[Engines.COMBUSTION].MASS,
   TaskIds[Engines.COMBUSTION].EFFICIENCY,
-  TaskIds[Engines.COMBUSTION].CONSUMPTION,
-  TaskIds[Engines.COMBUSTION].AUTOMATION,
+  //   TaskIds[Engines.COMBUSTION].CONSUMPTION,
 ];
 
 export const initialResearch = {

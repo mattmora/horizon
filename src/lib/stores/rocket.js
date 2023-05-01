@@ -18,7 +18,7 @@ export const initialRocket = {
     mass: BigNumber(0.5),
     area: ZERO,
     // rate: BigNumber('1.4e-22'),
-    rate: BigNumber('1.4e-14'),
+    rate: BigNumber('1.4e-12'),
     automation: {
       mode: 'off',
       interval: 1,
@@ -44,7 +44,7 @@ export const initialRocket = {
       count: BigNumber(0),
       mass: BigNumber(8000),
       output: BigNumber('640000000000000'),
-      consumption: BigNumber(30),
+      consumption: BigNumber(10),
       loss: 0.75,
       throttle: 0,
       thrust: ZERO,
@@ -58,7 +58,7 @@ export const initialRocket = {
       count: BigNumber(0),
       mass: BigNumber(50000),
       output: CSQ,
-      consumption: BigNumber(30),
+      consumption: BigNumber(1),
       loss: 0.75,
       throttle: 0,
       thrust: ZERO,
@@ -108,7 +108,7 @@ const createRocket = () => {
     const { mass, area } = capture;
     const possible = BigNumber.max(1, material.div(mass).plus(area).sqrt().minus(area.sqrt()).div(capture.step).integerValue(BigNumber.ROUND_FLOOR));
     const count = BigNumber.min(possible, tryCount);
-    console.log(count);
+    // console.log(count);
     const step = count * capture.step;
     const cost = area.sqrt().plus(step).pow(2).minus(area).times(mass);
     if (material.isGreaterThanOrEqualTo(cost)) {
@@ -159,6 +159,7 @@ const createRocket = () => {
         // thrust = thrust.plus(e.count.times(e.unitEnergy.div(CSQ)).times(throttle));
         consumption = consumption.plus(e.count.times(e.consumption).times(throttle));
       });
+      mass = mass.plus(capture.area.times(capture.mass));
       return { distance, velocity, fuel, mass, thrust, consumption, capture };
     },
     tryBuild,

@@ -3,7 +3,7 @@
   import { Engines, rocket } from '../lib/stores/rocket';
   import { progression } from '../lib/stores/progression';
   import Box from './Box.svelte';
-  import { ZERO } from '../lib/physics/constants';
+  import { C, ZERO } from '../lib/physics/constants';
   import { lorentz, horizonTime } from '../lib/physics/physics';
   import { TaskIds, research } from '../lib/stores/research';
   import BigNumber from 'bignumber.js';
@@ -66,7 +66,7 @@
   <div class="column gap-medium">
     <div class="messages-container">
       <div class="messages">
-        {#each messages as message (message.timestamp)}
+        {#each messages as message}
           <!-- <p transition:slide={{ duration: 300 }}>{`${message.timestamp} : ${message.text}`}</p> -->
           <p transition:slide={{ duration: 300 }}>{`${message.text}`}</p>
         {/each}
@@ -76,7 +76,13 @@
     <div class="column gap-small">
       <p>Time: <span class="num">{$horizonTime.toFixed(2)}</span>s</p>
       <p>Traveled: <span class="num">{$rocket.distance.toFixed(2)}</span>m</p>
-      <p>Velocity: <span class="num">{$rocket.velocity.toFixed(2)}</span>m/s</p>
+      <p>
+        Velocity: <span class="num">{$rocket.velocity.toFixed(2)}</span>m/s
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <span class="inspectable" on:click={() => postMessage('C: The speed of light, 299792458m/s.')}
+          >(<span class="num">{$rocket.velocity.times(100).div(C).toFixed(2)}%</span> C<sup>?</sup>)</span
+        >
+      </p>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <p
         class="inspectable"
@@ -110,13 +116,13 @@
         <!-- <p>Turns out there's not much gas in space... Gonna need a really big net.</p> -->
         <div class="row gap-medium">
           <div class="row gap-small">
-            <button disabled={$rocket.capture.automation.mode !== 'off'} on:click={() => expand()}
-              >Expand (<span class="num">+{area.sqrt().plus(step).pow(2).minus(area)}</span>)</button
-            >
-            <button disabled={$rocket.capture.automation.mode !== 'off'} on:click={() => reduce()}
+            <button on:click={() => expand()}>Expand (<span class="num">+{area.sqrt().plus(step).pow(2).minus(area)}</span>)</button>
+            <button on:click={() => reduce()}
               >Reduce (<span class="num">-{area.isGreaterThan(0) ? area.minus(BigNumber.max(0, area.sqrt().minus(step).pow(2))) : 0}</span>)</button
             >
           </div>
+        </div>
+        <div class="row gap-medium">
           {#if $progression.unlocks[TaskIds.FUEL_CAPTURE_AUTOMATION]}
             <RadioGroup
               title="Auto"
@@ -128,7 +134,7 @@
           {/if}
         </div>
         <p>
-          Mass: <span class="num">{area.times(mass).toFixed(2)}</span>kg (<span class="num">{mass}</span>PU)
+          Mass: <span class="num">{area.times(mass).toFixed(2)}</span>kg (<span class="num">{mass.toFixed(5)}</span>PU)
         </p>
         <p>
           Capture Rate: <span class="num">{rate.times(area).toExponential(2)}</span>kg/m of travel
@@ -143,9 +149,11 @@
           <h3>{Case.capital(key)} Engines: <span class="num">{engine.count}</span></h3>
           <div class="row gap-medium">
             <div class="row gap-small">
-              <button disabled={$rocket.engines[key].automation.mode !== 'off'} on:click={() => build(key)}>Build</button>
-              <button disabled={$rocket.engines[key].automation.mode !== 'off'} on:click={() => recycle(key)}>Recycle</button>
+              <button on:click={() => build(key)}>Build</button>
+              <button on:click={() => recycle(key)}>Recycle</button>
             </div>
+          </div>
+          <div class="row gap-medium">
             <!-- AUTOMATION INPUT -->
             {#if $progression.unlocks[TaskIds[key].AUTOMATION]}
               <RadioGroup title="Auto" name={TaskIds[key].AUTOMATION} options={['build', 'recycle', 'off']} bind:group={$rocket.engines[key].automation.mode} />
@@ -203,6 +211,7 @@
     height: 120px;
     border: 1px solid var(--primary);
     background: var(--background);
+    z-index: 1;
   }
 
   div.messages {
