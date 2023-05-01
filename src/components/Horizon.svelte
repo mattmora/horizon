@@ -91,7 +91,7 @@
             `Lorentz Factor: A quantification of how much time dilates and length contracts for Horizon, based on its velocity. As it increases, so do proper velocity and the relative passage of time on Earth.`,
           )}
       >
-        Lorentz Factor<sup>?</sup>: <span class="num">{$lorentz.toPrecision(20)}</span>m/s
+        Lorentz Factor<sup>?</sup>: <span class="num">{$lorentz.toPrecision(20)}</span>
       </p>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <p
