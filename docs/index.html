@@ -2,20 +2,20 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="./horizon/global.css" />
-    <link rel="icon" href="./horizon/favicon.png" />
+    <link rel="stylesheet" href="./global.css" />
+    <link rel="icon" href="./favicon.png" />
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="content-security-policy" content="">
-		<link href="./horizon/_app/immutable/assets/_page.913c7138.css" rel="stylesheet">
-		<link rel="modulepreload" href="./horizon/_app/immutable/entry/start.72dafc15.js">
-		<link rel="modulepreload" href="./horizon/_app/immutable/chunks/index.b9468fb8.js">
-		<link rel="modulepreload" href="./horizon/_app/immutable/chunks/singletons.d5b2e848.js">
-		<link rel="modulepreload" href="./horizon/_app/immutable/chunks/index.27d7024d.js">
-		<link rel="modulepreload" href="./horizon/_app/immutable/entry/app.a83c227e.js">
-		<link rel="modulepreload" href="./horizon/_app/immutable/entry/_layout.svelte.b719e734.js">
-		<link rel="modulepreload" href="./horizon/_app/immutable/entry/_layout.js.984db11e.js">
-		<link rel="modulepreload" href="./horizon/_app/immutable/chunks/_layout.da46b06b.js">
-		<link rel="modulepreload" href="./horizon/_app/immutable/entry/_page.svelte.7ca29219.js">
+		<link href="./_app/immutable/assets/_page.913c7138.css" rel="stylesheet">
+		<link rel="modulepreload" href="./_app/immutable/entry/start.736fd630.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/index.b9468fb8.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/singletons.b99f2581.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/index.27d7024d.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/app.45efe048.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/_layout.svelte.b719e734.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/_layout.js.984db11e.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/_layout.da46b06b.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/_page.svelte.7ca29219.js">
   </head>
 
   <body>
@@ -102,20 +102,19 @@
 			
 			<script>
 				{
-					__sveltekit_uc4ptr = {
+					__sveltekit_1gbm8q9 = {
 						env: {},
-						assets: "/horizon",
-						base: new URL("./horizon", location).pathname,
+						base: new URL(".", location).pathname.slice(0, -1),
 						element: document.currentScript.parentElement
 					};
 
 					const data = [null,null];
 
 					Promise.all([
-						import("./horizon/_app/immutable/entry/start.72dafc15.js"),
-						import("./horizon/_app/immutable/entry/app.a83c227e.js")
+						import("./_app/immutable/entry/start.736fd630.js"),
+						import("./_app/immutable/entry/app.45efe048.js")
 					]).then(([kit, app]) => {
-						kit.start(app, __sveltekit_uc4ptr.element, {
+						kit.start(app, __sveltekit_1gbm8q9.element, {
 							node_ids: [0, 2],
 							data,
 							form: null,
