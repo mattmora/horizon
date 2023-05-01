@@ -1,9 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible&display=swap');
+
 :root {
-  --background: var(--white);
-  --copy: var(--black);
-  --primary: var(--ufo-green);
-  --secondary: var(--plastic-pink);
-  --tertiary: var(--proton-purple);
+  --background: azure;
+  --copy: black;
+  --primary: black;
+  --secondary: orangered;
+  --tertiary: darkviolet;
+  --quaternary: darkturquoise;
 
   --space-xxsm: 4px;
   --space-xsm: 8px;
@@ -15,8 +18,8 @@
   --space-xxxlg: 144px;
 
   --size-small: 13px;
-  --size-copy: 16px;
-  --size-h3: 21px;
+  --size-copy: 18px;
+  --size-h3: 24px;
   --size-h2: 34px;
   --size-h1: 55px;
   --size-title: 89px;
@@ -28,8 +31,7 @@ body {
   font-size: var(--size-copy);
   color: var(--copy);
   background: transparent;
-  min-height: 100vh;
-  font-family: 'Alegreya Sans', sans-serif;
+  font-family: 'Atkinson Hyperlegible';
 }
 
 *,
@@ -38,4 +40,159 @@ body {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: bold;
+}
+
+sup,
+sub {
+  vertical-align: baseline;
+  position: relative;
+  top: -0.4em;
+}
+sub {
+  top: 0.4em;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.gap-small {
+  gap: var(--space-xxsm);
+}
+
+.gap-medium {
+  gap: var(--space-sm);
+}
+
+.gap-large {
+  gap: var(--space-m);
+}
+
+span.num {
+  font-variant-numeric: tabular-nums;
+  color: var(--tertiary);
+}
+
+span.emphasis {
+  font-weight: bold;
+  color: var(--secondary);
+}
+
+span.emphasis-alt {
+  font-weight: bold;
+  color: var(--quaternary);
+}
+
+.inspectable {
+  cursor: help;
+}
+
+button {
+  color: var(--secondary);
+  padding: 4px;
+  cursor: pointer;
+  font-family: 'Atkinson Hyperlegible';
+  font-size: var(--size-copy);
+  text-align: left;
+  /* border-width: 1px; */
+  /* border-style: solid; */
+  /* border-radius: 2px; */
+}
+
+button:hover:not(:disabled),
+:focus {
+  color: var(--quaternary);
+}
+
+button:disabled:not(.no-interact) {
+  filter: saturate(0.3);
+  cursor: default;
+}
+
+.no-interact {
+  color: var(--copy);
+  cursor: default;
+}
+
+input[type='radio'] {
+  accent-color: var(--secondary);
+  cursor: pointer;
+  height: 100%;
+}
+
+.radio-label {
+  cursor: pointer;
+}
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 20px;
+  background: #d3d3d3;
+  overflow: hidden;
+  opacity: 0.5;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
+}
+
+.slider:hover:not(:disabled),
+:focus {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--secondary);
+  box-shadow: -2000px 0 0 2000px var(--quaternary); /* 2 */
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: var(--secondary);
+  box-shadow: -2000px 0 0 2000px var(--quaternary); /* 2 */
+  cursor: pointer;
+}
+
+.progress {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 20px;
+  background: #d3d3d3;
+  overflow: hidden;
+}
+
+.progress::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 0px;
+  height: 20px;
+  box-shadow: -2000px 0 0 2000px var(--quaternary); /* 2 */
+}
+
+.progress::-moz-range-thumb {
+  width: 0px;
+  height: 20px;
+  box-shadow: -2000px 0 0 2000px var(--quaternary); /* 2 */
 }
